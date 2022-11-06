@@ -1,0 +1,120 @@
+{% extends 'accounts/base_accounts.html' %}
+{% block content %}
+{% load widget_tweaks %}
+{% load static %}
+
+<div class="container rounded bg-white mt-5 mb-5">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    <div class="row">
+        <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                <img class="rounded-circle mt-5" width="150px" src="{% static 'img/default.jpg' %}">
+                <div class="mb-3">
+                   <label class="labels" for="{{ form.image.id_for_label }}">Upload profile image</label>
+                        {%  render_field form.image class="form-control" %}
+                </div>
+                <span class="font-weight-bold">{{ user.username }}</span>
+                <span class="text-black-50">edogaru@mail.com.my</span><span> </span></div>
+        </div>
+        <div class="col-md-5 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Profile Settings</h4>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="first name" value="{{ user.first_name }}"></div>
+                    <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control" value="{{ user.last_name }}" placeholder="surname"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <label class="labels" for="{{ form.birthday.id_for_label }}">Your birth day</label>
+                        {%  render_field form.birthday class="form-control" %}
+                        {% if form.birthday.errors %}
+                             {% for error in form.birthday.errors %}
+                             <strong style="color: red">{{ error|escape }}</strong>
+                             {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12">
+                        <label class="labels" for="{{ form.role.id_for_label }}">Choice your role</label>
+                        {%  render_field form.role class="form-select" %}
+                        {% if form.role.errors %}
+                             {% for error in form.role.errors %}
+                             <strong style="color: red">{{ error|escape }}</strong>
+                             {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12">
+                        <label class="labels" for="{{ form.work_regulations.id_for_label }}">Choice regulation for your work</label>
+                        {%  render_field form.work_regulations class="form-select" %}
+                        {% if form.work_regulations.errors %}
+                             {% for error in form.work_regulations.errors %}
+                             <strong style="color: red">{{ error|escape }}</strong>
+                             {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                           <label class="labels" for="{{ form.available_from.id_for_label }}">You will available from</label>
+                           {%  render_field form.available_from class="form-control" %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="labels" for="{{ form.available_to.id_for_label }}">You will available to</label>
+                            {%  render_field form.available_to class="form-control" %}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="labels" for="{{ form.meeting_type.id_for_label }}">Type of your future meetings</label>
+                        {%  render_field form.meeting_type class="form-select" %}
+                        {% if form.meeting_type.errors %}
+                             {% for error in form.meeting_type.errors %}
+                             <strong style="color: red">{{ error|escape }}</strong>
+                             {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12">
+                        <label class="labels" for="{{ form.email.id_for_label }}">Email</label>
+                        {%  render_field form.email class="form-control" placeholder="enter email"%}
+                        {% if form.email.errors %}
+                             {% for error in form.email.errors %}
+                             <strong style="color: red">{{ error|escape }}</strong>
+                             {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12">
+                        <label class="labels" for="{{ form.phone_number.id_for_label }}">Mobile Number</label>
+                        {%  render_field form.phone_number class="form-control" placeholder="enter phone number" %}
+                        {% if form.phone_number.errors %}
+                             {% for error in form.phone_number.errors %}
+                             <strong style="color: red">{{ error|escape }}</strong>
+                             {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12">
+                        <label class="labels" for="{{ form.adress.id_for_label }}">Address</label>
+                        {%  render_field form.adress class="form-control" placeholder="enter phone address" rows='2'%}
+                    </div>
+                    <div class="col-md-12">
+                        <label class="labels" for="{{ form.calendar_scope.id_for_label }}">Calendar scope</label>
+                        {%  render_field form.calendar_scope class="form-select"%}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
+                    <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>
+                </div>
+                <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Save Profile</button></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center experience"><span>Edit Experience</span><span class="border px-3 p-1 add-experience"><i class="fa fa-plus"></i>&nbsp;Experience</span></div><br>
+                <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text" class="form-control" placeholder="experience" value=""></div> <br>
+                <div class="col-md-12"><label class="labels">Additional Details</label><input type="text" class="form-control" placeholder="additional details" value=""></div>
+            </div>
+        </div>
+    </div>
+        </form>
+</div>
+{% endblock %}

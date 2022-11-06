@@ -1,0 +1,30 @@
+{% extends 'calendar_manager/base.html' %}
+{% block title %}{{ month }} {{day}}{% endblock %}
+{% block content %}
+<div class="drive-wrapper drive-list-view" style="background: #9c9fab;">
+  <div class="container">
+    <div class="timeline">
+	{% for meeting in meetings %}
+		<div class="timeline-row">
+			<div class="timeline-time">
+				{{ meeting.time_start|time:'H:i' }} - {{ meeting.time_finish|time:'H:i' }}
+			</div>
+			<div class="timeline-content">
+				<i class="icon-attachment"></i>
+				<h4>Meeting</h4>
+				<p>{{ meeting.title }}</p>
+				<div class="thumbs">
+					<img class="img-fluid rounded" src="{{ meeting.asker.profile.image.url }}" alt="Maxwell Admin">
+					<img class="img-fluid rounded" src="{{ meeting.replied.profile.image.url }}" alt="Maxwell Admin">
+				</div>
+				<div class="">
+					<span class="badge badge-pill">{{ meeting.asker.first_name }} {{ meeting.asker.last_name }}</span>
+					<span class="badge badge-pill">{{ meeting.replied.first_name }} {{ meeting.replied.last_name }}</span>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+  </div>
+</div>
+{% endblock %}
