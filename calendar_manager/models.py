@@ -8,9 +8,10 @@ month = [(x, x) for x in range(1, 13)]
 class Day(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     year = models.IntegerField()
+    meeting = models.ManyToManyField('Meetings', related_name="days")
     month = models.IntegerField(choices=month)
     day = models.IntegerField()
-    count_meetings = models.IntegerField(default=1)
+    count_meetings = models.IntegerField(default=0)
     available_places = models.IntegerField()
 
     def __str__(self):
@@ -19,7 +20,6 @@ class Day(models.Model):
 class Meetings(models.Model):
     asker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='asker')
     replied = models.ForeignKey(User, on_delete=models.CASCADE, related_name='replied')
-    day = models.ManyToManyField('Day')
     confirmed = models.BooleanField(default=False)
     time_start = models.TimeField()
     time_finish = models.TimeField()

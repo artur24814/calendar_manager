@@ -2,17 +2,23 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.views import View
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from .forms import SignUpForm, ProfileForm
+from .validators import validate_password
 
 
 class RegisterView(View):
     """
-    view for creating new user
+    View for creating new user
+    :out:
+        :model: `User`
+        :model: `Profile`
+        login user
     """
     def get(self, request):
         form = SignUpForm()
@@ -24,16 +30,25 @@ class RegisterView(View):
     def post(self, request):
         form = SignUpForm(data=request.POST)
         if form.is_valid():
+            #save user
             user = form.save()
-            messages.success(request, _('Account stworzony'))
+            messages.info(request, _("Thanks for registering. You are now logged in."))
+            #sigh in user
+            user = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'],
+                                    )
+            login(request, user)
             return redirect(reverse('accounts:profile', kwargs={'user_pk': user.pk}))
         else:
             return render(request, 'accounts/register.html', {'form': form})
 
 class ProfileView(View):
+    '''
+    Profile updating view 
+    '''
     def get(self, request, user_pk):
         user = get_object_or_404(User, pk=user_pk)
-        form = ProfileForm()
+        form = ProfileForm(instance=user.profile)
         context = {
             'user': user,
             'form': form,
@@ -42,12 +57,11 @@ class ProfileView(View):
 
     def post(self, request, user_pk):
         user = get_object_or_404(User, pk=user_pk)
-        form = ProfileForm(request.POST, request.FILES)
+        form = ProfileForm(request.POST, request.FILES , instance=user.profile)
         if form.is_valid():
             add_owner = form.save(commit=False)
-            add_owner.owner = user
             add_owner.save()
-            return redirect(reverse('accounts:login'))
+            return redirect(reverse('home'))
         context = {
             'user': user,
             'form': form,
@@ -72,7 +86,7 @@ class LoginView(View):
             login(request, user)
             if 'next' in request.POST:
                 return redirect(request.POST['next'])
-            return redirect('/crf/patient/')
+            return redirect(reverse('home'))
         context = {
             'form': form
         }
@@ -86,3 +100,26 @@ class LogoutView(View):
     def post(self, request):
         logout(request)
         return redirect('/login/')
+
+"""
+
+HTMX views
+views for HTMX method. Doesn't screen in template only for work with HTMX
+
+"""
+def valid_password(request):
+    name = request.POST.get('username')
+    password = request.POST.get('password1')
+    if password is None:
+        return HttpResponse('')
+    result = validate_password(password)
+    if name.upper() in password.upper() and name != '':
+        return HttpResponse('nie może być zbyt podobne do innych Twoich danych osobowych')
+    return HttpResponse(f'{result}')
+
+def check_existing_name(request):
+    name = request.GET.get('username')
+    user = User.objects.filter(username=name).first()
+    if user:
+        return HttpResponse('Taki login już istnieje')
+    return HttpResponse('')
