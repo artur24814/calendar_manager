@@ -3,76 +3,75 @@
 {% block content %}
 {% load static %}
 {% block style %}<link href="{% static 'css/style_container.css'%}" rel="stylesheet" />{% endblock %}
-
-<style>
-    .calendar-button {
-        width: 190px;
-        height: 11vh;
-    }
-</style>
-
-                    <div class="drive-wrapper drive-list-view">
-                        <div class="table-responsive drive-items-table-wrapper">
-                            <h2 align="center" style="color: orange;">{{ month_name }} {{ year }}</h2> <hr>
-                             <table class="table">
-                                 <colgroup>
-                                   <col span="5" style="background: rgb(243,243,246);
-                                               background: linear-gradient(27deg, rgb(255,255,255) 0%, rgb(218,229,218) 0%, rgb(247,250,247) 48%, rgb(213,217,217) 100%)">
-                                   <col span="2" style="background: rgb(243,243,246);
-                                               background: linear-gradient(27deg, rgb(245,207,210) 48%, rgb(229,167,167) 100%);">
-                                 </colgroup>
-                                 <thead>
-                                   <tr style="height: 70px" align="center">
-                                           <th style="color: white; background: purple;">
-                                               Sun</th>
-                                           <th style="color: white; background: purple;">
-                                               Mon</th>
-                                           <th style="color: white; background: purple;">
-                                               Tue</th>
-                                           <th style="color: white; background: purple;">
-                                               Wed</th>
-                                           <th style="color: white; background: purple;">
-                                               Thu</th>
-                                           <th style="color: white; background: purple;">
-                                               Fri</th>
-                                           <th style="color: white; background: purple;">
-                                               Sat</th>
-                                   </tr>
-                                 </thead>
-                                 <tbody>
-                                 {% for week in month2 %}
-                                 <tr style="height: 90px">{% for day in week %}
-                                        {% if day == 0 %}<th><button class="btn  btn-lg">&nbsp&nbsp&nbsp&nbsp&nbsp</button></th>
-                                         {% else %}
-                                            {% if day < 10 %}
-                                              <th align="center"><a href="{% url 'calendar:timeline-followers' month day user.pk%}">
-                                                  <button {% if day == today %} class="btn calendar-button btn-outline-danger btn-lg"{% else %}class="btn calendar-button btn-lg"{% endif %}>
-                                                      &nbsp&nbsp{{ day }}<br>
-                                                      {% for user_day in days %}
-                                                       {% if user_day.day == day %}
-                                                       <span class="badge" style="background-color: #d2bd70; font-size: .62em;">meetings:{{ user_day.count_meetings }}</span>
-                                                       <span class="badge" style="background-color: #66b666; font-size: .62em;">free position:{{ user_day.available_places }}</span>
-                                                       {% endif %}
-                                                       {% endfor %}
-                                                  </button></a></th>
-                                            {% else %}
-                                               <th align="center"><a href="{% url 'calendar:timeline-followers' month day user.pk%}">
-                                                   <button {% if day == today %} class="btn calendar-button btn-outline-danger btn-lg"{% else %}class="btn calendar-button btn-lg"{% endif %}>
-                                                       {{ day }}<br>
-                                                       {% for user_day in days %}
-                                                       {% if user_day.day == day %}
-                                                       <span class="badge" style="background-color: #d2bd70; font-size: .62em;">meetings:{{ user_day.count_meetings }}</span>
-                                                       <span class="badge" style="background-color: #66b666; font-size: .62em;">free position:{{ user_day.available_places }}</span>
-                                                       {% endif %}
-                                                       {% endfor %}
-                                                   </button></a></th>
+    <div class="drive-wrapper drive-list-view">
+        <div class="table-responsive drive-items-table-wrapper">
+            <h2 align="center" style="color: orange;">{{ month_name }} {{ year }}</h2> <hr>
+             <table class="table">
+                <colgroup>
+                    <col span="5" style="background: rgb(243,243,246);
+                               background: linear-gradient(27deg, rgb(255,255,255) 0%, rgb(218,229,218) 0%, rgb(247,250,247) 48%, rgb(213,217,217) 100%)">
+                    <col span="2" style="background: rgb(243,243,246);
+                               background: linear-gradient(27deg, rgb(245,207,210) 48%, rgb(229,167,167) 100%);">
+                </colgroup>
+                <thead>
+                   <tr style="height: 70px" align="center">
+                           <th style="color: white; background: purple;">
+                               Sun</th>
+                           <th style="color: white; background: purple;">
+                               Mon</th>
+                           <th style="color: white; background: purple;">
+                               Tue</th>
+                           <th style="color: white; background: purple;">
+                               Wed</th>
+                           <th style="color: white; background: purple;">
+                               Thu</th>
+                           <th style="color: white; background: purple;">
+                               Fri</th>
+                           <th style="color: white; background: purple;">
+                               Sat</th>
+                   </tr>
+                </thead>
+                <tbody>
+                    {% for week in month2 %}
+                    <tr style="height: 90px">{% for day in week %}
+                        {% if day == 0 %}
+                            <th><button class="btn  btn-lg">&nbsp&nbsp&nbsp&nbsp&nbsp</button></th>
+                        {% else %}
+                            {% if day < 10 %}
+                            <th align="center">
+                                <a href="{% url 'calendar:timeline-followers' month day user.pk%}">
+                                    <button {% if day == today %} class="btn calendar-button btn-outline-danger btn-lg"{% else %}class="btn calendar-button btn-lg"{% endif %}>
+                                        &nbsp&nbsp{{ day }}<br>
+                                        {% for user_day in days %}
+                                            {% if user_day.day == day and  user_day.count_meetings != 0 %}
+                                                <span class="badge" style="background-color: #d2bd70; font-size: .62em;">meetings:{{ user_day.count_meetings }}</span>
+                                                <span class="badge" style="background-color: #66b666; font-size: .62em;">free position:{{ user_day.available_places }}</span>
                                             {% endif %}
-                                       {% endif %}
-                                     {% endfor %}</tr>
-                                 {% endfor %}
-                                 </tbody>
-                             </table>
-                        </div>
-                    </div>
+                                        {% endfor %}
+                                    </button>
+                                </a>
+                            </th>
+                            {% else %}
+                            <th align="center">
+                                <a href="{% url 'calendar:timeline-followers' month day user.pk%}">
+                                    <button {% if day == today %} class="btn calendar-button btn-outline-danger btn-lg"{% else %}class="btn calendar-button btn-lg"{% endif %}>
+                                        {{ day }}<br>
+                                        {% for user_day in days %}
+                                            {% if user_day.day == day and  user_day.count_meetings != 0 %}
+                                                <span class="badge" style="background-color: #d2bd70; font-size: .62em;">meetings:{{ user_day.count_meetings }}</span>
+                                                <span class="badge" style="background-color: #66b666; font-size: .62em;">free position:{{ user_day.available_places }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </button>
+                                </a>
+                            </th>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}</tr>
+                {% endfor %}
+                </tbody>
+             </table>
+        </div>
+    </div>
 
 {% endblock %}

@@ -20,7 +20,7 @@ class SignUpForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        exclude = ['age', 'owner']
+        exclude = ['age', 'owner', 'day_available_places']
         widgets = {
             'birthday': forms.DateInput(format=('%Y-%m-%d'),
                                           attrs={'class': 'form-control',

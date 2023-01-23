@@ -15,8 +15,8 @@ def add_day_model(user, month, day):
                                 year=now.year,
                                 month=month,
                                 day=day,
-                                available_places=10
     )
-    if created is False:
+    if created is True:
+        day_model.available_places=user.profile.day_available_places
         day_model.save()
     return day_model

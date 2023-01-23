@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
-from django.utils.timezone import get_current_timezone
+from django.utils.timezone import now
+
+
 
 month = [(x, x) for x in range(1, 13)]
 
@@ -12,7 +14,7 @@ class Day(models.Model):
     month = models.IntegerField(choices=month)
     day = models.IntegerField()
     count_meetings = models.IntegerField(default=0)
-    available_places = models.IntegerField()
+    available_places = models.IntegerField(null=True)
 
     def __str__(self):
         return f"{self.owner} {self.year}/{self.month}/{self.day}"
@@ -23,6 +25,7 @@ class Meetings(models.Model):
     confirmed = models.BooleanField(default=False)
     time_start = models.TimeField()
     time_finish = models.TimeField()
+    date = models.DateField(default=now)
     title = models.CharField(default='business meeting', max_length=180)
     message = models.TextField(blank=True, null=True)
 

@@ -78,14 +78,20 @@ class CalendarView(View):
 
 
 class Timeline(View):
+    """
+    Timeline for login User
+
+    :in:
+        month, day
+    :return:
+        Queryset :model:Meetings
+        Template `timeline.html`
+    """
     def get(self, request, month, day):
         month_name = calendar.month_name[month]
         try:
             day = Day.objects.get(month=month, day=day, owner=request.user)
-            print(day)
             meetings = day.meeting.all().order_by('time_start')
-            print(meetings)
-            print('4')
         except Exception:
             meetings = []
         context = {
@@ -97,6 +103,23 @@ class Timeline(View):
 
 
 class TimelineForFollowers(View):
+    """
+    Timeline for Users
+
+    :in:
+        month, day, user_pk
+    **GET**
+    :return:
+        :form: `AskMeetingsForm`
+        Queryset :model:Meetings
+        Template `timeline_for_followers.html`
+    **POST**
+    :return:
+        create :model:Day for request.user and user.user_pk
+                :model:Meeting 
+                add :model:Meeting to :model:Day
+        Template `timeline_for_followers.html`
+    """
     def get(self, request, month, day, user_pk):
         user = get_object_or_404(User, pk=user_pk)
         if user == request.user:
@@ -104,8 +127,8 @@ class TimelineForFollowers(View):
         month_name = calendar.month_name[month]
         form = AskMeetingsForm()
         try:
-            this_day = Day.objects.get(month=month, day=day, owner=user)
-            meetings = Meetings.objects.filter(day=this_day).order_by('time_start')
+            day = Day.objects.get(month=month, day=day, owner=user)
+            meetings = day.meeting.all().order_by('time_start')
         except Exception:
             meetings = {}
         context = {
@@ -123,12 +146,12 @@ class TimelineForFollowers(View):
         if form.is_valid():
             #count time finish
             time_finish = datetime.datetime.combine(datetime.date.today(), form.cleaned_data['time_start']) + timedelta(minutes=30)
-
-            form_correct = form.save(commit=False)
-            form_correct.asker = request.user
-            form_correct.replied = user
-            form_correct.time_finish = time_finish.time()
-            meeting = form_correct.save()
+            meeting = form.save(commit=False)
+            meeting.asker = request.user
+            meeting.replied = user
+            meeting.time_finish = time_finish.time()
+            meeting.date = datetime.datetime(datetime.datetime.now().year, month, day)
+            meeting.save()
             #create or get days for user and oponents
             day_user = add_day_model(request.user, month, day)
             day_opponent_users = add_day_model(user, month, day)
@@ -148,4 +171,47 @@ class TimelineForFollowers(View):
             'day': day,
         }
         return render(request, 'calendar_manager/timeline_for_followers.html', context)
+
+class MeetingsListView(View):
+    """
+    Meetings List View
+
+    :return:
+        Queryset :model:Meetings for request.user
+    """
+    def get(self,request):
+        all_meetings = Meetings.objects.filter(replied=request.user) | Meetings.objects.filter(asker=request.user)
+        context = {
+            'user': request.user,
+            'meetings': all_meetings.filter(date__gte=now).order_by('-time_start').order_by('date')
+        }
+        return render(request, 'calendar_manager/meetings_list.html', context)
+
+class AcceptMeeting(View):
+    """
+    Accept meeting requirement
+
+    :in:
+        pk_meeting
+    :return:
+        :model:Meeting.acept is True
+        set of :model:Day.count meeting + 1
+        redirect `meetings-list`
+    """
+    def get(self, request, pk_meeting):
+        meeting = get_object_or_404(Meetings, pk=pk_meeting)
+        if meeting.replied == request.user and meeting.confirmed is False:
+            days = meeting.days.all()
+            for day in days:
+                if day.available_places == 0:
+                    messages.success("You or oponent haven't available plases on this day please, please change a day meeting")
+                    return redirect(reverse('calendar:meetings-list'))
+                day.count_meetings += 1
+                day.available_places -= 1
+                day.save()
+            meeting.confirmed = True
+            meeting.save()
+        return redirect(reverse('calendar:meetings-list'))
+
+
 

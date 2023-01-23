@@ -13,19 +13,17 @@ ROLE = [
     ('2', 'User')
 ]
 WORK_REG = [
-    (0, '---'),
     (1, 'Mon-Fri'),
     (2, 'Mon-Sun'),
     (3, 'Mon-Sat'),
     (4, 'Sun-Sat'),
 ]
 MEETING_TYPE = [
-    (0, '---'),
-    (1, '15m'),
-    (2, '30m'),
-    (3, '45m'),
-    (4, '1h'),
-    (5, '1d'),
+    (15, '15m'),
+    (30, '30m'),
+    (45, '45m'),
+    (60, '1h'),
+    (1, '1d'),
 ]
 CALENDAR_SCOPE = [
     (0, 'all'),
@@ -40,22 +38,31 @@ class Profile(models.Model):
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices=ROLE, null=True)
-    work_regulations = models.IntegerField(choices=WORK_REG, default=0, null=True)
+    work_regulations = models.IntegerField(choices=WORK_REG, default=1, null=True)
     available_from = models.TimeField(blank=True, null=True)
     available_to = models.TimeField(blank=True, null=True)
-    meeting_type = models.IntegerField(choices=MEETING_TYPE, default=0, null=True)
+    meeting_type = models.IntegerField(choices=MEETING_TYPE, default=2, null=True)
     birthday = models.DateField(null=True)
     age = models.IntegerField(null=True)
     email = models.EmailField(null=True, blank=True)
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True, null=True)
     adress = models.TextField(null=True, blank=True)
     calendar_scope = models.IntegerField(choices=CALENDAR_SCOPE, null=True)
+    day_available_places = models.IntegerField(null=True)
 
 
     def save(self, *args, **kwargs):
         try:
             today = datetime.datetime.now(tz=get_current_timezone()).today()
             self.age = today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+            #count every day available places
+            #substract finish work and start work
+            result = datetime.datetime.combine(datetime.date.today(),self.available_to) - datetime.datetime.combine(datetime.date.today(),self.available_from)
+            if self.meeting_type == 0:
+                self.day_available_places = 1 #for full day meeting
+            else:
+                print(self.work_regulations)
+                self.day_available_places = int(result.seconds/(self.meeting_type*60))
             super().save(*args, **kwargs)
         except Exception:
             super().save(*args, **kwargs)

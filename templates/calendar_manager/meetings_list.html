@@ -1,0 +1,40 @@
+{% extends 'calendar_manager/base.html' %}
+{% block title %}Meetings{% endblock %}
+{% block content %}
+<div class="drive-wrapper drive-list-view" style="background: #9c9fab;">
+  <div class="container">
+	{% for meeting in meetings %}
+        {% if meeting.confirmed is False %}
+        <div class="alert alert-primary d-flex align-items-center" role="alert">
+            {% if meeting.replied == request.user %}
+            <a href="{% url 'calendar:meeting-accept' meeting.pk %}" onclick="return confirm('Are you sure accept meeting with {{ meeting.asker.first_name }} {{ meeting.asker.last_name }} at {{ meeting.time_start|time:'H:i' }} {{ meeting.date|date:"D d E Y" }} ?');" aria-describedby="meetingaccept">
+                <img class='m-image' src="https://img.icons8.com/external-bearicons-blue-bearicons/64/null/external-question-call-to-action-bearicons-blue-bearicons.png" width="24" height="24"/>
+            </a>
+            <div role="info-m" id="meetingaccept">
+                <p>Click to accept meetings</p>
+            </div>
+            {% else %}
+                <img class='m-image' src="https://img.icons8.com/external-bearicons-blue-bearicons/64/null/external-question-call-to-action-bearicons-blue-bearicons.png" width="24" height="24"/>
+            {% endif %}
+            &nbsp&nbsp
+            <div>
+                {{ meeting.time_start|time:'H:i' }} - {{ meeting.time_finish|time:'H:i' }} <br>
+                Between: {{ meeting.asker.first_name }} {{ meeting.asker.last_name }} and {{ meeting.replied.first_name }} {{ meeting.replied.last_name }} <br>
+                {{ meeting.date|date:"D d E Y" }}
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-primary d-flex align-items-center" role="alert">
+            <img class='m-image' src="https://img.icons8.com/doodle/48/null/checkmark.png" width="30" height="30"/>
+            &nbsp&nbsp
+            <div>
+                {{ meeting.time_start|time:'H:i' }} - {{ meeting.time_finish|time:'H:i' }} <br>
+                Between: {{ meeting.asker.first_name }} {{ meeting.asker.last_name }} and {{ meeting.replied.first_name }} {{ meeting.replied.last_name }} <br>
+                {{ meeting.date|date:"D d E Y" }}
+            </div>
+        </div>
+        {% endif %}
+		{% endfor %}
+  </div>
+</div>
+{% endblock %}

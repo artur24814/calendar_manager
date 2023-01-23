@@ -50,8 +50,8 @@
             </li>
               <!-- action-->
             <li class="nav-item">
-              <a class="dropdown-item" aria-current="page" href="#"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
-                Your actions
+              <a class="dropdown-item" aria-current="page" href="{% url 'calendar:meetings-list'%}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
+                Your meetings
               {% if quantity_meetings == 0 %}
               <span class="position-absolute badge rounded-pill bg-danger"></span></a>
               {% else %}

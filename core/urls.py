@@ -6,6 +6,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from calendar_manager.views import HomePageView
 
 urlpatterns = [
+    #Adding social auth path
+    path('social-auth/', include('social_django.urls', namespace="social")),
     path('admin/', admin.site.urls),
     path('', HomePageView.as_view(), name='home'),
     path('', include('accounts.urls')),
