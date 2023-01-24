@@ -194,6 +194,7 @@ AWS_DEFAULT_ACL = bool(os.environ.get('AWS_DEFAULT_ACL'))
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_QUERYSTRING_AUTH = False
 
+#for django Oauth2
 SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get('SOCIAL_AUTH_FACEBOOK_KEY')
 SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get('SOCIAL_AUTH_FACEBOOK_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
@@ -204,3 +205,11 @@ SOCIAL_AUTH_FACEBOOK_EXTRA_DATA = [
     ('picture', 'picture'),
     ('link', 'profile_url'),
 ]
+
+#for sending mail
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')

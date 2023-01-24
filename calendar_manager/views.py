@@ -12,7 +12,7 @@ from datetime import timedelta
 from django.contrib import messages
 from django.utils.translation import gettext as _
 
-from .utils import now, add_day_model
+from .utils import now, add_day_model, sendHTMLEmail
 
 
 
@@ -212,6 +212,7 @@ class AcceptMeeting(View):
             meeting.confirmed = True
             meeting.save()
         return redirect(reverse('calendar:meetings-list'))
+
 
 
 
