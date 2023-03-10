@@ -11,6 +11,8 @@ from .models import Day, Meetings
 from datetime import timedelta
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from django.http import JsonResponse
+import json
 
 from .utils import now, add_day_model, sendHTMLEmail
 
@@ -100,6 +102,26 @@ class Timeline(View):
             'day': day,
         }
         return render(request, 'calendar_manager/timeline.html', context)
+    
+def infoTimeline(request):
+    data = json.loads(request.body)
+    month_name = calendar.month_name[int(data['month'])]
+    day=int(data['day'])
+    user = get_object_or_404(User, pk=int(data['userId']))
+    try:
+        day = Day.objects.get(month=data['month'], day=day, owner=user)
+        meetings = day.meeting.all().order_by('time_start')
+    except Exception:
+        meetings = []
+    context = {
+        'meetings': meetings,
+        'month': month_name,
+        'day': day,
+    }
+    if user == request.user:
+        context['form'] = True
+    print(data)
+    return JsonResponse(context, safe=False)
 
 
 class TimelineForFollowers(View):

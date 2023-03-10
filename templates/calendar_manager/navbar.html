@@ -1,96 +1,43 @@
 {% load static %}
-<!-- Navbar -->
-<nav class="navbar navbar-light bg-light fixed-top sticky-top" style="height: 100px;box-shadow: -1px -3px 24px 0px rgba(66, 68, 90, 1);">
-  <!-- Container wrapper -->
-  <div class="container-fluid">
-    <!-- Navbar brand -->
-    <a class="navbar-brand" href="{% url 'home' %}">
-      <img src="https://img.icons8.com/plasticine/100/000000/apple-calendar.png" width="50" height="50"/> Calendar Manager</a>
-    <!-- Collapsible wrapper -->
-<!--    <div class="collapse navbar-collapse" id="navbarSupportedContent">-->
-<!--      &lt;!&ndash; Left links &ndash;&gt;-->
-<!--      <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="#">Dashboard</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="#">Team</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="#">Projects</a>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--      &lt;!&ndash; Left links &ndash;&gt;-->
-<!--    </div>-->
-    <!-- Collapsible wrapper -->
-    <!-- Avatar -->
-    {% if not request.user.is_authenticated %}
-      <a class="nav-link active" aria-current="page" href="{% url 'accounts:login' %}">Sign in</a>
-    {% else %}
-      <a class="navbar-toggle nav-link " type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-        {% if user.profile.image.url %}
-          <img src="{{ request.user.profile.image.url }}" class="rounded-circle" height="40" width="40" alt="Black and White Portrait of a Man"/>
-        {% else %}
-          <img src={% static 'img/default.jpg' %} class="rounded-circle" height="40" width="40" alt="Black and White Portrait of a Man"/>
-        {% endif %}
-      </a>
-      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">{{ request.user.first_name }} {{ request.user.last_name }}</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <hr>
-        <div class="offcanvas-body">
-          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-              <!-- your calendar-->
-            <li class="nav-item">
-              <a class="dropdown-item" aria-current="page" href="{% url 'calendar:calendar' request.user.pk %}"><img src="https://img.icons8.com/material-rounded/24/null/timeline-week.png"/>
-                Your calendar
-              </a>
-            </li>
-              <!-- action-->
-            <li class="nav-item">
-              <a class="dropdown-item" aria-current="page" href="{% url 'calendar:meetings-list'%}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
-                Your meetings
-              {% if quantity_meetings == 0 %}
-              <span class="position-absolute badge rounded-pill bg-danger"></span></a>
-              {% else %}
-              <span class="position-absolute badge rounded-pill bg-danger">{{ quantity_meetings }}</span></a>
-              {% endif %}
-            </li>
-              <!-- Messages-->
-            <li class="nav-item">
-              <a class="dropdown-item" href="#"><img src="https://img.icons8.com/material-sharp/24/null/message-group.png"/> Messages
-              <span class="position-absolute badge rounded-pill bg-danger">
-                10
-              </span></a>
-            </li>
-            <hr>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
-                <li><a class="dropdown-item" href="{% url 'accounts:profile' request.user.pk %}"><img src="https://img.icons8.com/sf-black/64/null/gear.png" height="24" width="24"/> Settings</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-              <hr>
-              <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                  {% if request.user.is_authenticated %}
-                    <form action="{% url 'accounts:logout' %}" method="post">{% csrf_token %}
-                              <li> <button type="submit" class="btn btn-secondary" >Wyloguj się</button></li>
-                    </form>
+<nav id="nav" class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}"><img src="https://img.icons8.com/cotton/64/null/pillow--v4.png" class="d-inline-block align-text-top"/> &nbsp;&nbsp;CALENDAR MANAGER</a>
+            <div class="links">
+                <a class="nav-link active" aria-current="page" href=""></a>
+                <form class="d-flex">
+                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                  {% if not request.user.is_authenticated %}
+                    <a class="nav-link active" aria-current="page" href="{% url 'accounts:login' %}">Sign in</a>
+                  {% else %}
+                  <div class="btn-group dropstart">
+                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> 
+                      {% if user.profile.image.url %}
+                        <img src="{{ request.user.profile.image.url }}" class="rounded-circle" height="40" width="40" alt="Black and White Portrait of a Man"/>
+                      {% else %}
+                        <img src={% static 'img/default.jpg' %} class="rounded-circle" height="40" width="40" alt="Black and White Portrait of a Man"/>
+                      {% endif %}</button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'calendar:calendar' request.user.pk %}"><img src="https://img.icons8.com/material-rounded/24/null/timeline-week.png"/>
+                      Your calendar</a></li>
+                    <li><a class="dropdown-item" href="{% url 'calendar:meetings-list'%}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
+                      Your meetings
+                      {% if quantity_meetings == 0 %}
+                        <span class="position-absolute badge rounded-pill bg-danger"></span>
+                      {% else %}
+                        <span class="position-absolute badge rounded-pill bg-danger">{{ quantity_meetings }}</span>
+                      {% endif %}
+                      </a></li>
+                    <li><a class="dropdown-item" href="{% url 'accounts:profile' request.user.pk %}"><img src="https://img.icons8.com/sf-black/64/null/gear.png" height="24" width="24"/> Settings</a></li>
+                  </ul>
                   {% endif %}
-                </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    {% endif %}
-  </div>
+                  </div>
+            </div>
+        <button class="burger-menu" id="burger-menu">
+            &#9776;
+        </button>
+    </div>
 </nav>
 <!-- Navbar -->
+<script src="{% static 'js/navbar.js' %}"></script>

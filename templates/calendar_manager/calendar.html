@@ -2,76 +2,128 @@
 {% block title %}{{ month_name }} {{ year }}{% endblock %}
 {% block content %}
 {% load static %}
-{% block style %}<link href="{% static 'css/style_container.css'%}" rel="stylesheet" />{% endblock %}
-    <div class="drive-wrapper drive-list-view">
-        <div class="table-responsive drive-items-table-wrapper">
-            <h2 align="center" style="color: orange;">{{ month_name }} {{ year }}</h2> <hr>
-             <table class="table">
-                <colgroup>
-                    <col span="5" style="background: rgb(243,243,246);
-                               background: linear-gradient(27deg, rgb(255,255,255) 0%, rgb(218,229,218) 0%, rgb(247,250,247) 48%, rgb(213,217,217) 100%)">
-                    <col span="2" style="background: rgb(243,243,246);
-                               background: linear-gradient(27deg, rgb(245,207,210) 48%, rgb(229,167,167) 100%);">
-                </colgroup>
+<div class="container px-4 px-lg-5 mt-5 mb-5">
+    <div class="row no-gutters">
+        <div class="col-md-4 col-lg-4"><img class='img-profile' src="{{ user.profile.image.url }}"></div>
+        <div class="col-md-8 col-lg-8">
+            <div class="d-flex flex-column">
+                <div class="d-flex flex-row justify-content-between align-items-center p-5 bg-dark text-white">
+                    <h3 class="display-5">{{ user.first_name }} {{ user.last_name }}</h3>
+                    <i class="fa fa-facebook"></i>
+                    <i class="fa fa-google"></i>
+                    <i class="fa fa-youtube-play"></i>
+                    <i class="fa fa-dribbble"></i>
+                    <i class="fa fa-linkedin"></i>
+                </div>
+                <div class="p-3 bg-black text-white">
+                    <h6>Available from {{ user.profile.available_from |time:"H:i" }} to {{ user.profile.available_to |time:"H:i"}}</h6>
+                </div>
+                <div class="d-flex flex-row text-white">
+                    <div class="p-4 bg-primary text-center skill-block dropdown " tabindex="1">
+                        <i class="db2" tabindex="1"></i>
+                            <a class="dropbtn"> Private info</a>
+                            <div class="dropdown-content">
+                                <p>Available from {{ user.profile.available_from |time:"H:i" }} to {{ user.profile.available_to |time:"H:i"}}</p>
+                                <p>At every: {{ user.profile.get_work_regulations_display }}</p>
+                                <p>My meetings last {{ user.profile.get_meeting_type_display}}</p>
+                            </div>
+                    </div>
+                    <div class="p-3 bg-success text-center skill-block">
+                        <h4>70%</h4>
+                        <h6>Jquery</h6>
+                    </div>
+                    <div class="p-3 bg-warning text-center skill-block">
+                        <h4>80%</h4>
+                        <h6>HTML</h6>
+                    </div>
+                    <div class="p-3 bg-danger text-center skill-block">
+                        <h4>75%</h4>
+                        <h6>PHP</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<br>
+    <div class="row">
+        <div class="col">
+            <div class="calendar-wrap">
+                <h2 class="month-year">{{ month_name }} {{ year }}</h2>
+            
+                <table class="calendar">
                 <thead>
-                   <tr style="height: 70px" align="center">
-                           <th style="color: white; background: purple;">
-                               Sun</th>
-                           <th style="color: white; background: purple;">
-                               Mon</th>
-                           <th style="color: white; background: purple;">
-                               Tue</th>
-                           <th style="color: white; background: purple;">
-                               Wed</th>
-                           <th style="color: white; background: purple;">
-                               Thu</th>
-                           <th style="color: white; background: purple;">
-                               Fri</th>
-                           <th style="color: white; background: purple;">
-                               Sat</th>
-                   </tr>
+                    <tr>
+                    <th class="day-title" scope="col">Mon</th>
+                    <th class="day-title" scope="col">Tue</th>
+                    <th class="day-title" scope="col">Wed</th>
+                    <th class="day-title" scope="col">Thu</th>
+                    <th class="day-title" scope="col">Fri</th>
+                    <th class="day-title" scope="col">Sat</th>
+                    <th class="day-title" scope="col">Sun</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for week in month2 %}
-                    <tr style="height: 90px">{% for day in week %}
-                        {% if day == 0 %}
-                            <th><button class="btn  btn-lg">&nbsp&nbsp&nbsp&nbsp&nbsp</button></th>
-                        {% else %}
-                            {% if day < 10 %}
-                            <th align="center">
-                                <a href="{% url 'calendar:timeline-followers' month day user.pk%}">
-                                    <button {% if day == today %} class="btn calendar-button btn-outline-danger btn-lg"{% else %}class="btn calendar-button btn-lg"{% endif %}>
-                                        &nbsp&nbsp{{ day }}<br>
-                                        {% for user_day in days %}
-                                            {% if user_day.day == day and  user_day.count_meetings != 0 %}
-                                                <span class="badge" style="background-color: #d2bd70; font-size: .62em;">meetings:{{ user_day.count_meetings }}</span>
-                                                <span class="badge" style="background-color: #66b666; font-size: .62em;">free position:{{ user_day.available_places }}</span>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </button>
-                                </a>
-                            </th>
+                    <tr class="week">
+                        {% for day in week %}
+                            {% if day == 0 %}
+                                    <td class="day prev-mon" tabindex="0"><span class="day-number"></span></td>
                             {% else %}
-                            <th align="center">
-                                <a href="{% url 'calendar:timeline-followers' month day user.pk%}">
-                                    <button {% if day == today %} class="btn calendar-button btn-outline-danger btn-lg"{% else %}class="btn calendar-button btn-lg"{% endif %}>
-                                        {{ day }}<br>
-                                        {% for user_day in days %}
-                                            {% if user_day.day == day and  user_day.count_meetings != 0 %}
-                                                <span class="badge" style="background-color: #d2bd70; font-size: .62em;">meetings:{{ user_day.count_meetings }}</span>
-                                                <span class="badge" style="background-color: #66b666; font-size: .62em;">free position:{{ user_day.available_places }}</span>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </button>
-                                </a>
-                            </th>
+                                    {% if day == today %}
+                                        <td class="day active-d today" tabindex="0" data-month="{{month}}" data-day="{{day}}" data-pk="{{user.pk}}">
+                                            <!-- <a href="{% url 'calendar:timeline-followers' month day user.pk%}" style="text-decoration: inherit; font-style: inherit; color: inherit;"> -->
+                                                <span class="day-number">{{day}}</span>
+                                            <!-- </a> -->
+                                        </td>
+                                    {% else %}
+                                        <td class="day active-d" tabindex="0" data-month="{{month}}" data-day="{{day}}" data-pk="{{user.pk}}">
+                                            <!-- <a href="{% url 'calendar:timeline-followers' month day user.pk%}" style="text-decoration: inherit; font-style: inherit; color: inherit;"> -->
+                                                <span class="day-number">{{day}}</span>
+                                            <!-- </a> -->
+                                        </td>
+                                    {% endif %}
                             {% endif %}
-                        {% endif %}
-                    {% endfor %}</tr>
-                {% endfor %}
+                    {% endfor %}
+                    </tr>
+                    {% endfor %}
                 </tbody>
-             </table>
+                </table>
+                <a class="button reset">Clear date-range</a>
+            </div>
+        </div>
+        <div class="col timeline-col col-hide">
+            <div class="timeline">
+                <!-- {% for meeting in meetings %}
+                    {% if meeting.confirmed is True%}
+                    <div class="timeline-row">
+                        <div class="timeline-time">
+                            {{ meeting.time_start|time:'H:i' }} - {{ meeting.time_finish|time:'H:i' }}
+                        </div>
+                        <div class="timeline-content">
+                            <i class="icon-attachment"></i>
+                            <h4>Meeting</h4>
+                            <p>{{ meeting.title }}</p>
+                            <div class="thumbs">
+                                <img class="img-fluid rounded" src="{{ meeting.asker.profile.image.url }}" alt="Maxwell Admin">
+                                <img class="img-fluid rounded" src="{{ meeting.replied.profile.image.url }}" alt="Maxwell Admin">
+                            </div>
+                            <div class="">
+                                <span class="badge badge-pill">{{ meeting.asker.first_name }} {{ meeting.asker.last_name }}</span>
+                                <span class="badge badge-pill">{{ meeting.replied.first_name }} {{ meeting.replied.last_name }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %} -->
+            </div>
         </div>
     </div>
-
+</div>
+                            <!-- {% for user_day in days %}
+                                {% if user_day.day == day and  user_day.count_meetings != 0 %}
+                                    <span class="badge" style="background-color: #d2bd70; font-size: .62em;">meetings:{{ user_day.count_meetings }}</span>
+                                    <span class="badge" style="background-color: #66b666; font-size: .62em;">free position:{{ user_day.available_places }}</span>
+                                {% endif %}
+                            {% endfor %}    -->
+<script src="{% static 'js/calendar.js' %}"></script>
 {% endblock %}
