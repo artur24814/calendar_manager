@@ -1,4 +1,5 @@
 const nav = document.querySelector('#nav');
+const meeting_quantity = document.querySelector('#meeting-quantity')
 console.log('ok')
 
 const onScroll = (event) => {
@@ -39,3 +40,24 @@ navLink.forEach((link) =>
     ul.classList.remove("show");
   })
 );
+
+meeting_quantity.addEventListener('click', function(){
+    let meetings = this.dataset.meetings
+    console.log(meetings)
+    let htmlContent = ''
+    for (element in meetings){
+        htmlContent += `<div class="alert alert-primary" role="alert">
+                            ${element}.
+                        </div>`
+    }
+    Swal.fire({
+        title: 'Your meetings',
+        icon: 'info',
+        html: htmlContent,
+        showCloseButton: true,
+        focusConfirm: false,
+        confirmButtonText:
+            '<i class="fa fa-thumbs-up"></i> Great!',
+        confirmButtonAriaLabel: 'Thumbs up, great!',
+        })
+})

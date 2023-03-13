@@ -112,6 +112,32 @@
                     {%  render_field form.calendar_scope class="form-select"%}
                 </div>
             </div>
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center experience">
+                    <span>Add links</span>
+                    <!--<span class="border px-3 p-1 add-experience"><i class="fa fa-plus"></i>&nbsp;Experience</span> -->
+                </div><br>
+                <div class="col-md-12">
+                    <label class="labels" for="{{ form.calendar_scope.id_for_label }}">Facebook</label>
+                    {%  render_field form.facebook class="form-control"%}
+                </div>
+                <div class="col-md-12">
+                    <label class="labels" for="{{ form.calendar_scope.id_for_label }}">Github</label>
+                    {%  render_field form.github class="form-control"%}
+                </div>
+                <div class="col-md-12">
+                    <label class="labels" for="{{ form.calendar_scope.id_for_label }}">Twitter</label>
+                    {%  render_field form.twitter class="form-control"%}
+                </div>
+                <div class="col-md-12">
+                    <label class="labels" for="{{ form.calendar_scope.id_for_label }}">Instagram</label>
+                    {%  render_field form.instagram class="form-control"%}
+                </div>
+                <div class="col-md-12">
+                    <label class="labels" for="{{ form.calendar_scope.id_for_label }}">Website</label>
+                    {%  render_field form.website class="form-control"%}
+                </div>
+            </div>
         </div>
     </div>
         </form>

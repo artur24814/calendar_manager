@@ -13,9 +13,10 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.http import JsonResponse
 import json
+from django.contrib.auth.decorators import login_required
 
 from .utils import now, add_day_model, sendHTMLEmail
-
+from django.forms.models import model_to_dict
 
 
 class HomePageView(View):
@@ -64,6 +65,7 @@ class CalendarView(View):
     year = now.year
     month_name = calendar.month_name[now.month]
     month = now.month
+    form = AskMeetingsForm()
     def get(self, request, user_pk):
         user = get_object_or_404(User, pk=user_pk)
         days = Day.objects.filter(owner=user, month=self.month, year=self.year)
@@ -74,7 +76,8 @@ class CalendarView(View):
             'month2': self.month2,
             'month': self.month,
             'year': self.year,
-            'month_name': self.month_name
+            'month_name': self.month_name,
+            'form': self.form,
         }
         return render(request, 'calendar_manager/calendar.html', context)
 
@@ -102,25 +105,44 @@ class Timeline(View):
             'day': day,
         }
         return render(request, 'calendar_manager/timeline.html', context)
-    
+
+@login_required    
 def infoTimeline(request):
     data = json.loads(request.body)
     month_name = calendar.month_name[int(data['month'])]
     day=int(data['day'])
+
+    #get user model
     user = get_object_or_404(User, pk=int(data['userId']))
     try:
-        day = Day.objects.get(month=data['month'], day=day, owner=user)
-        meetings = day.meeting.all().order_by('time_start')
+        day_model = Day.objects.get(month=data['month'], day=day, owner=user)
+        meetings = day_model.meeting.filter(confirmed=True).order_by('-time_start')
     except Exception:
         meetings = []
+
+    listOfMeetings = []
+    #formating objects to dict for json
+    for meeting in meetings:
+        meeting_dict = model_to_dict(meeting)
+        meeting_dict['asker'] = {
+            'name': meeting.asker.first_name + ' ' + meeting.asker.last_name,
+            'img_url': meeting.asker.profile.image.url
+            }
+        meeting_dict['replied'] = {
+            'name': meeting.replied.first_name + ' ' + meeting.replied.last_name,
+            'img_url': meeting.replied.profile.image.url
+        }
+        listOfMeetings.append(meeting_dict)
+
     context = {
-        'meetings': meetings,
+        'meetings':  listOfMeetings,
         'month': month_name,
-        'day': day,
+        'day':  day,
     }
+
+    #Show moore ditails if user is request user
     if user == request.user:
-        context['form'] = True
-    print(data)
+        context['show_detail'] = True
     return JsonResponse(context, safe=False)
 
 
@@ -182,7 +204,7 @@ class TimelineForFollowers(View):
             day_opponent_users.meeting.add(meeting)
             
             messages.success(request, _('Your request for meeting was send, wait for confirm'))
-            return redirect(reverse('calendar:timeline-followers', kwargs={'month': month, 'day': day, 'user_pk': user_pk}))
+            return redirect(reverse('calendar:calendar', kwargs={'user_pk': user_pk}))
         meetings = Meetings.objects.all()
         month = calendar.month_name[month]
         context = {

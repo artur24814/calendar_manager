@@ -49,6 +49,11 @@ class Profile(models.Model):
     adress = models.TextField(null=True, blank=True)
     calendar_scope = models.IntegerField(choices=CALENDAR_SCOPE, null=True)
     day_available_places = models.IntegerField(null=True)
+    facebook = models.URLField(max_length=400, null=True, blank=True)
+    github = models.URLField(max_length=400, null=True, blank=True)
+    twitter = models.URLField(max_length=400, null=True, blank=True)
+    instagram = models.URLField(max_length=400, null=True, blank=True)
+    website = models.URLField(max_length=400, null=True, blank=True)
 
 
     def save(self, *args, **kwargs):

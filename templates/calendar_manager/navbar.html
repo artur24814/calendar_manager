@@ -21,14 +21,14 @@
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{% url 'calendar:calendar' request.user.pk %}"><img src="https://img.icons8.com/material-rounded/24/null/timeline-week.png"/>
                       Your calendar</a></li>
-                    <li><a class="dropdown-item" href="{% url 'calendar:meetings-list'%}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
+                    <li><button class="dropdown-item" id="meeting-quantity" data-meetings="{{all_meetings}}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
                       Your meetings
                       {% if quantity_meetings == 0 %}
                         <span class="position-absolute badge rounded-pill bg-danger"></span>
                       {% else %}
-                        <span class="position-absolute badge rounded-pill bg-danger">{{ quantity_meetings }}</span>
+                        <span class="position-absolute badge rounded-pill bg-danger ">{{ quantity_meetings }}</span>
                       {% endif %}
-                      </a></li>
+                    </button></li>
                     <li><a class="dropdown-item" href="{% url 'accounts:profile' request.user.pk %}"><img src="https://img.icons8.com/sf-black/64/null/gear.png" height="24" width="24"/> Settings</a></li>
                   </ul>
                   {% endif %}
