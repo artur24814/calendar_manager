@@ -17,6 +17,7 @@ from datetime import timedelta
 
 from .forms import AskMeetingsForm
 from .models import Day, Meetings
+from accounts.models import Profile
 from .utils import now, add_day_model
 
 
@@ -195,3 +196,41 @@ def infoTimeline(request):
         context['show_detail'] = True
     return JsonResponse(context, safe=False)
 
+def folowUnfolowView(request, profile_pk):
+    profile = Profile.objects.get(pk=profile_pk)
+
+    if profile != request.user.profile:
+        if profile in request.user.profile.follows.all():
+            print('ok')
+            request.user.profile.follows.remove(profile)
+        else:
+            print('ok again')
+            request.user.profile.follows.add(profile)
+
+    return redirect(reverse('calendar:calendar', kwargs={'user_pk': profile.owner.pk}))
+
+
+class ListFriendsView(ListView):
+    """
+    List Users view
+
+    :search: by username, fierst_name, last_name
+    """
+    template_name = 'calendar_manager/list_friends.html'
+    paginate_by = 20
+
+    #get context
+    def get_context_data(self, **kwargs):
+        context = super(ListFriendsView, self).get_context_data(**kwargs)
+        search = self.request.GET.get("search")
+        if search:
+            context['input'] = 'search=' + search
+        return context
+    
+    #get filtered queryset
+    def get_queryset(self):
+        queryset = self.request.user.profile.follows.all()
+        if self.request.GET.get("search"):
+            search = self.request.GET.get("search")
+            queryset = self.request.user.profile.follows.filter(owner__username__contains=search) | self.request.user.profile.follows.filter(owner__first_name__contains=search) | self.request.user.profile.follows.filter(owner__last_name__contains=search)
+        return queryset

@@ -24,6 +24,14 @@
                       Your calendar</a>
                     </li>
                     <li>
+                      <a class="dropdown-item" href="{% url 'calendar:friends' %}"><i class="bi bi-people-fill"></i>
+                      Your friends</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'calendar:friends' %}"><i class="bi bi-chat-left-dots-fill"></i>
+                      Messages</a>
+                    </li>
+                    <li>
                       <button class="dropdown-item" id="meeting-quantity" data-meetings="{{all_meetings}}"  data-url="{% url 'calendar:meeting-accept-no-args' %}" data-user="{{request.user.id}}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
                       Your meetings
                         {% if quantity_meetings == 0 %}

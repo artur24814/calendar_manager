@@ -55,6 +55,8 @@ class Profile(models.Model):
     instagram = models.URLField(max_length=400, null=True, blank=True)
     website = models.URLField(max_length=400, null=True, blank=True)
 
+    follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
+
 
     def save(self, *args, **kwargs):
         try:
@@ -71,11 +73,16 @@ class Profile(models.Model):
             super().save(*args, **kwargs)
         except Exception:
             super().save(*args, **kwargs)
+    def __str__(self):
+        return self.owner.first_name + " " + self.owner.last_name
 
 #Create Profile when new User Signs Up
 def create_profile(sender, instance, created, **kwargs):
     if created:
         user_profile = Profile(owner=instance)
+        user_profile.save()
+        #User follow themselves
+        user_profile.follows.set([instance.profile.id])
         user_profile.save()
 
 post_save.connect(create_profile, sender=User)
