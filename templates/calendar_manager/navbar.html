@@ -4,12 +4,12 @@
         <a class="navbar-brand" href="{% url 'home' %}"><img src="https://img.icons8.com/cotton/64/null/pillow--v4.png" class="d-inline-block align-text-top"/> &nbsp;&nbsp;CALENDAR MANAGER</a>
             <div class="links">
                 <a class="nav-link active" aria-current="page" href=""></a>
-                <form class="d-flex">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" method="get", action="{% url 'calendar:users'  %}">
+                  <input class="form-control me-2" type="search" name='search' placeholder="Search" aria-label="Search">
                   <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
                   {% if not request.user.is_authenticated %}
-                    <a class="nav-link active" aria-current="page" href="{% url 'accounts:login' %}">Sign in</a>
+                    <a class="nav-link active" id='sing-in' aria-current="page" data-redirectUrl="{% url 'accounts:logout' %}" href="{% url 'accounts:login' %}">Sign in</a>
                   {% else %}
                   <div class="btn-group dropstart">
                     <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> 
@@ -19,17 +19,30 @@
                         <img src={% static 'img/default.jpg' %} class="rounded-circle" height="40" width="40" alt="Black and White Portrait of a Man"/>
                       {% endif %}</button>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'calendar:calendar' request.user.pk %}"><img src="https://img.icons8.com/material-rounded/24/null/timeline-week.png"/>
-                      Your calendar</a></li>
-                    <li><button class="dropdown-item" id="meeting-quantity" data-meetings="{{all_meetings}}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'calendar:calendar' request.user.pk %}"><img src="https://img.icons8.com/material-rounded/24/null/timeline-week.png"/>
+                      Your calendar</a>
+                    </li>
+                    <li>
+                      <button class="dropdown-item" id="meeting-quantity" data-meetings="{{all_meetings}}"  data-url="{% url 'calendar:meeting-accept-no-args' %}" data-user="{{request.user.id}}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
                       Your meetings
-                      {% if quantity_meetings == 0 %}
-                        <span class="position-absolute badge rounded-pill bg-danger"></span>
-                      {% else %}
-                        <span class="position-absolute badge rounded-pill bg-danger ">{{ quantity_meetings }}</span>
-                      {% endif %}
-                    </button></li>
-                    <li><a class="dropdown-item" href="{% url 'accounts:profile' request.user.pk %}"><img src="https://img.icons8.com/sf-black/64/null/gear.png" height="24" width="24"/> Settings</a></li>
+                        {% if quantity_meetings == 0 %}
+                          <span class="position-absolute badge rounded-pill bg-danger"></span>
+                        {% else %}
+                          <span class="position-absolute badge rounded-pill bg-danger ">{{ quantity_meetings }}</span>
+                        {% endif %}
+                      </button>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'accounts:profile' request.user.pk %}">
+                        <img src="https://img.icons8.com/sf-black/64/null/gear.png" height="24" width="24"/> Settings
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'accounts:logout' %}">
+                        <button class="btn btn-outline-success" type="submit">Logout</button>
+                      </a>
+                    </li>
                   </ul>
                   {% endif %}
                   </div>

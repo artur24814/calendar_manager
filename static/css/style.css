@@ -713,11 +713,19 @@ display: none;
 }
 .MyAlert {
     padding: 20px;
-    background-color: #507e94; /* Red */
+    background-color: #507e94;
     color: white;
     margin-bottom: 15px;
     box-shadow:0 0 15px 5px #ccc;
 }
+.m-image {
+  transition: .3s all ease-in-out;
+}
+.m-image:hover {
+  filter: drop-shadow(0 0 0.75rem crimson);
+  transform: scale(1.5)
+}
+
 
 /* The close button */
 .closebtn {

@@ -97,7 +97,7 @@ class LogoutView(View):
     """
     logout view
     """
-    def post(self, request):
+    def get(self, request):
         logout(request)
         return redirect('/login/')
 

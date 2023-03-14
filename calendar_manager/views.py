@@ -1,22 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
-import calendar
-import datetime
 from django.urls import reverse
-from django.utils.timezone import get_current_timezone
-from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
 from django.views import View
+from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import AskMeetingsForm
-from .models import Day, Meetings
-from datetime import timedelta
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
 from django.http import JsonResponse
-import json
-from django.contrib.auth.decorators import login_required
 
-from .utils import now, add_day_model, sendHTMLEmail
-from django.forms.models import model_to_dict
+import json
+import calendar
+import datetime
+from datetime import timedelta
+
+from .forms import AskMeetingsForm
+from .models import Day, Meetings
+from .utils import now, add_day_model
+
 
 
 class HomePageView(View):
@@ -27,27 +29,30 @@ class HomePageView(View):
         context = {}
         return render(request, 'home/homepage.html', context)
 
-# class MyCalendarView(LoginRequiredMixin,View):
-#     month2 = calendar.monthcalendar(now.year, now.month)
-#     today = now.day
-#     year = now.year
-#     month_name = calendar.month_name[now.month]
-#     month = now.month
+class ListUsersView(ListView):
+    """
+    List Users view
 
-#     def get(self, request):
-#         user = request.user
-#         days = Day.objects.filter(owner=request.user).filter(month=self.month).filter(year=self.year)
+    :search: by username, fierst_name, last_name
+    """
+    template_name = 'calendar_manager/list_users.html'
+    paginate_by = 20
 
-#         context = {
-#             'days': days,
-#             'user': user,
-#             'today': self.today,
-#             'month2': self.month2,
-#             'month': self.month,
-#             'year': self.year,
-#             'month_name': self.month_name
-#         }
-#         return render(request, 'calendar_manager/calendar.html', context)
+    #get context
+    def get_context_data(self, **kwargs):
+        context = super(ListUsersView, self).get_context_data(**kwargs)
+        search = self.request.GET.get("search")
+        if search:
+            context['input'] = 'search=' + search
+        return context
+    
+    #get filtered queryset
+    def get_queryset(self):
+        queryset = User.objects.all().order_by('-date_joined')
+        if self.request.GET.get("search"):
+            search = self.request.GET.get("search")
+            queryset = User.objects.filter(username__contains=search).order_by('-date_joined') | User.objects.filter(first_name__contains=search).order_by('-date_joined') | User.objects.filter(last_name__contains=search).order_by('-date_joined')
+        return queryset
 
 class CalendarView(View):
     """
@@ -66,6 +71,7 @@ class CalendarView(View):
     month_name = calendar.month_name[now.month]
     month = now.month
     form = AskMeetingsForm()
+
     def get(self, request, user_pk):
         user = get_object_or_404(User, pk=user_pk)
         days = Day.objects.filter(owner=user, month=self.month, year=self.year)
@@ -82,81 +88,12 @@ class CalendarView(View):
         return render(request, 'calendar_manager/calendar.html', context)
 
 
-class Timeline(View):
-    """
-    Timeline for login User
-
-    :in:
-        month, day
-    :return:
-        Queryset :model:Meetings
-        Template `timeline.html`
-    """
-    def get(self, request, month, day):
-        month_name = calendar.month_name[month]
-        try:
-            day = Day.objects.get(month=month, day=day, owner=request.user)
-            meetings = day.meeting.all().order_by('time_start')
-        except Exception:
-            meetings = []
-        context = {
-            'meetings': meetings,
-            'month': month_name,
-            'day': day,
-        }
-        return render(request, 'calendar_manager/timeline.html', context)
-
-@login_required    
-def infoTimeline(request):
-    data = json.loads(request.body)
-    month_name = calendar.month_name[int(data['month'])]
-    day=int(data['day'])
-
-    #get user model
-    user = get_object_or_404(User, pk=int(data['userId']))
-    try:
-        day_model = Day.objects.get(month=data['month'], day=day, owner=user)
-        meetings = day_model.meeting.filter(confirmed=True).order_by('-time_start')
-    except Exception:
-        meetings = []
-
-    listOfMeetings = []
-    #formating objects to dict for json
-    for meeting in meetings:
-        meeting_dict = model_to_dict(meeting)
-        meeting_dict['asker'] = {
-            'name': meeting.asker.first_name + ' ' + meeting.asker.last_name,
-            'img_url': meeting.asker.profile.image.url
-            }
-        meeting_dict['replied'] = {
-            'name': meeting.replied.first_name + ' ' + meeting.replied.last_name,
-            'img_url': meeting.replied.profile.image.url
-        }
-        listOfMeetings.append(meeting_dict)
-
-    context = {
-        'meetings':  listOfMeetings,
-        'month': month_name,
-        'day':  day,
-    }
-
-    #Show moore ditails if user is request user
-    if user == request.user:
-        context['show_detail'] = True
-    return JsonResponse(context, safe=False)
-
-
-class TimelineForFollowers(View):
+class TimelineForFollowers(LoginRequiredMixin,View):
     """
     Timeline for Users
 
     :in:
         month, day, user_pk
-    **GET**
-    :return:
-        :form: `AskMeetingsForm`
-        Queryset :model:Meetings
-        Template `timeline_for_followers.html`
     **POST**
     :return:
         create :model:Day for request.user and user.user_pk
@@ -164,26 +101,6 @@ class TimelineForFollowers(View):
                 add :model:Meeting to :model:Day
         Template `timeline_for_followers.html`
     """
-    def get(self, request, month, day, user_pk):
-        user = get_object_or_404(User, pk=user_pk)
-        if user == request.user:
-            return redirect(reverse('calendar:timeline', kwargs={'month': month, 'day': day}))
-        month_name = calendar.month_name[month]
-        form = AskMeetingsForm()
-        try:
-            day = Day.objects.get(month=month, day=day, owner=user)
-            meetings = day.meeting.all().order_by('time_start')
-        except Exception:
-            meetings = {}
-        context = {
-            'user': user,
-            'form': form,
-            'meetings': meetings,
-            'month': month_name,
-            'day': day,
-        }
-        return render(request, 'calendar_manager/timeline_for_followers.html', context)
-
     def post(self, request, month, day, user_pk):
         user = get_object_or_404(User, pk=user_pk)
         form = AskMeetingsForm(request.POST)
@@ -205,33 +122,11 @@ class TimelineForFollowers(View):
             
             messages.success(request, _('Your request for meeting was send, wait for confirm'))
             return redirect(reverse('calendar:calendar', kwargs={'user_pk': user_pk}))
-        meetings = Meetings.objects.all()
-        month = calendar.month_name[month]
-        context = {
-            'user': user,
-            'form': form,
-            'meetings': meetings,
-            'month': month,
-            'day': day,
-        }
-        return render(request, 'calendar_manager/timeline_for_followers.html', context)
+        messages.error(request, _('Upss, correct ask form and try again'))
+        return redirect(reverse('calendar:calendar', kwargs={'user_pk': user_pk}))
 
-class MeetingsListView(View):
-    """
-    Meetings List View
 
-    :return:
-        Queryset :model:Meetings for request.user
-    """
-    def get(self,request):
-        all_meetings = Meetings.objects.filter(replied=request.user) | Meetings.objects.filter(asker=request.user)
-        context = {
-            'user': request.user,
-            'meetings': all_meetings.filter(date__gte=now).order_by('-time_start').order_by('date')
-        }
-        return render(request, 'calendar_manager/meetings_list.html', context)
-
-class AcceptMeeting(View):
+class AcceptMeeting(LoginRequiredMixin,View):
     """
     Accept meeting requirement
 
@@ -248,15 +143,55 @@ class AcceptMeeting(View):
             days = meeting.days.all()
             for day in days:
                 if day.available_places == 0:
-                    messages.success("You or oponent haven't available plases on this day please, please change a day meeting")
-                    return redirect(reverse('calendar:meetings-list'))
+                    messages.success("You or your oponent haven't available plases on this day, please change a day meeting")
+                    return redirect(reverse('calendar:calendar', kwargs={'user_pk': request.user.id}))
                 day.count_meetings += 1
                 day.available_places -= 1
                 day.save()
             meeting.confirmed = True
             meeting.save()
-        return redirect(reverse('calendar:meetings-list'))
+        return redirect(reverse('calendar:calendar', kwargs={'user_pk': request.user.id}))
 
 
+@login_required
+#view for frontend    
+def infoTimeline(request):
+    data = json.loads(request.body)
+    month_name = calendar.month_name[int(data['month'])]
+    day=int(data['day'])
 
+    #get user model
+    user = get_object_or_404(User, pk=int(data['userId']))
+    try:
+        day_model = Day.objects.get(month=data['month'], day=day, owner=user)
+        meetings = day_model.meeting.filter(confirmed=True).order_by('-time_start')
+    except Exception:
+        meetings = []
+
+    listOfMeetings = []
+    #formating objects to dict for json
+    for meeting in meetings:
+        meeting_dict = model_to_dict(meeting)
+        meeting_dict['asker'] = {
+            'name': meeting.asker.first_name + ' ' + meeting.asker.last_name,
+            'id': meeting.asker.id,
+            'img_url': meeting.asker.profile.image.url
+            }
+        meeting_dict['replied'] = {
+            'name': meeting.replied.first_name + ' ' + meeting.replied.last_name,
+            'id': meeting.replied.id,
+            'img_url': meeting.replied.profile.image.url
+        }
+        listOfMeetings.append(meeting_dict)
+
+    context = {
+        'meetings':  listOfMeetings,
+        'month': month_name,
+        'day':  day,
+    }
+
+    #Show moore ditails if user is request user
+    if user == request.user:
+        context['show_detail'] = True
+    return JsonResponse(context, safe=False)
 
