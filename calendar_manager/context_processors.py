@@ -4,12 +4,14 @@ from .utils import now
 from django.forms.models import model_to_dict
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from chat.models import Room
 
 def navbar_messages(request):
     """
     context processor to check unread message and show it to user wherever user is in website,
     """
     try:
+        all_user_chat_room = Room.objects.all()
         unconfirmed_meeetins = Meetings.objects.filter(replied=request.user.pk, confirmed=False)
         all_meetings = Meetings.objects.filter(replied=request.user) | Meetings.objects.filter(asker=request.user)
         list_meetings = [model_to_dict(meeting) for meeting in all_meetings.filter(date__gte=now).order_by('-time_start').order_by('date')]
@@ -28,6 +30,8 @@ def navbar_messages(request):
                 'img_url': replied.profile.image.url
                 }
             # dict_meetings[f'{list_meetings.index(element)}']['replied'] = model_to_dict(element.replied.profile)
-        return {'quantity_meetings': len(unconfirmed_meeetins), 'all_meetings': json.dumps(dict_meetings, sort_keys=True, indent=1, cls=DjangoJSONEncoder)}
+        return {'quantity_meetings': len(unconfirmed_meeetins), 
+                'all_meetings': json.dumps(dict_meetings, sort_keys=True, indent=1, cls=DjangoJSONEncoder),
+                'rooms': all_user_chat_room}
     except:
-        return {'quantity_meetings': '', 'all_meetings': ''}
+        return {'quantity_meetings': '', 'all_meetings': '', 'rooms': ''}

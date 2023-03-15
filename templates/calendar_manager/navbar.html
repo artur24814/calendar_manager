@@ -20,7 +20,7 @@
                       {% endif %}</button>
                   <ul class="dropdown-menu">
                     <li>
-                      <a class="dropdown-item" href="{% url 'calendar:calendar' request.user.pk %}"><img src="https://img.icons8.com/material-rounded/24/null/timeline-week.png"/>
+                      <a class="dropdown-item" href="{% url 'calendar:calendar' request.user.pk %}"><i class="bi bi-calendar-week"></i>
                       Your calendar</a>
                     </li>
                     <li>
@@ -28,11 +28,11 @@
                       Your friends</a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="{% url 'calendar:friends' %}"><i class="bi bi-chat-left-dots-fill"></i>
+                      <a class="dropdown-item" href="{% url 'calendar:friends' %}" data-bs-toggle="modal" data-bs-target="#MessageModal"><i class="bi bi-chat-left-dots-fill"></i>
                       Messages</a>
                     </li>
                     <li>
-                      <button class="dropdown-item" id="meeting-quantity" data-meetings="{{all_meetings}}"  data-url="{% url 'calendar:meeting-accept-no-args' %}" data-user="{{request.user.id}}"><img src="https://img.icons8.com/material/24/null/filled-appointment-reminders.png" width="20" height="20"/>
+                      <button class="dropdown-item" id="meeting-quantity" data-meetings="{{all_meetings}}"  data-url="{% url 'calendar:meeting-accept-no-args' %}" data-user="{{request.user.id}}"><i class="bi bi-bell-fill"></i>
                       Your meetings
                         {% if quantity_meetings == 0 %}
                           <span class="position-absolute badge rounded-pill bg-danger"></span>
@@ -43,7 +43,7 @@
                     </li>
                     <li>
                       <a class="dropdown-item" href="{% url 'accounts:profile' request.user.pk %}">
-                        <img src="https://img.icons8.com/sf-black/64/null/gear.png" height="24" width="24"/> Settings
+                        <i class="bi bi-gear-fill"></i> Settings
                       </a>
                     </li>
                     <li>
@@ -60,5 +60,20 @@
         </button>
     </div>
 </nav>
-<!-- Navbar -->
+<!-- Navbar end -->
+<!-- Modal messages -->
+<div class="modal fade" id="MessageModal" tabindex="-1" aria-labelledby="MessageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="MessageModalLabel">Your discussion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      {% include 'chat/index.html' %}
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="{% static 'js/navbar.js' %}"></script>

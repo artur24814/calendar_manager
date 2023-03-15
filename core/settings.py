@@ -33,6 +33,9 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    # add django channels
+    'channels' ,
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'calendar_manager.apps.CalendarManagerConfig',
     'accounts.apps.AccountsConfig',
+    'chat.apps.ChatConfig',
     'widget_tweaks',
     #For AWS
     'storages',
@@ -50,6 +54,14 @@ INSTALLED_APPS = [
     #social-auth-app-django
     'social_django',
 ]
+
+ASGI_APPLICATION = 'core.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
