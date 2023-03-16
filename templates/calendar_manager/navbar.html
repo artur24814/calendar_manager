@@ -1,7 +1,7 @@
 {% load static %}
 <nav id="nav" class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}"><img src="https://img.icons8.com/cotton/64/null/pillow--v4.png" class="d-inline-block align-text-top"/> &nbsp;&nbsp;CALENDAR MANAGER</a>
+        <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'img/icon.png' %}" class="d-inline-block align-text-top"/> &nbsp;&nbsp;CALENDAR MANAGER</a>
             <div class="links">
                 <a class="nav-link active" aria-current="page" href=""></a>
                 <form class="d-flex" method="get", action="{% url 'calendar:users'  %}">

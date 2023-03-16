@@ -1,9 +1,9 @@
-console.log("Sanity check from chat.js.");
+// console.log("Sanity check from chat.js.");
 
-// focus 'roomInput' when user opens the page
+// //focus 'roomInput' when user opens the page
 // document.querySelector("#roomInput").focus();
 
-// submit if the user presses the enter key
+// //submit if the user presses the enter key
 // document.querySelector("#roomInput").onkeyup = function(e) {
 //     if (e.keyCode === 13) {  // enter key
 //         document.querySelector("#roomConnect").click();
