@@ -28,6 +28,8 @@ A high-level Python web framework that encourages rapid development and clean, p
 
 <strong>HTMX</strong> htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext
 
+<strong>channels</strong> Channels is a project that takes Django and extends its abilities beyond HTTP - to handle WebSockets, chat protocols, IoT protocols, and more. It’s built on a Python specification called ASGI.
+
 </details>
 
 <hr>
@@ -35,33 +37,70 @@ A high-level Python web framework that encourages rapid development and clean, p
 
 <center><h1 id="django_calendar"> Calendar Manager <span style='font-size:80px;'><img src="https://img.icons8.com/doodle/48/null/apple-calendar--v2.png"/></span></h1></center>
 
-This page has a system login registration. When creating a new profile, you need to select when you will be available for meetings from one hour to an hour, as well as the meeting format (it can be 15/30/45/60 minutes or one day) and the days of the week. All this information will be needed to count available seats and avoid booking when you are not available or physically unable to do so.
+## The website contains several applications:
+* accounts
+* calendar
+* Chat app
+
+<h3>Accounts</h3>
+
+You must be register to have full access to all features. When creating a new profile, you need to select when you will be available for meetings from one hour to an hour, as well as the meeting format (it can be 15/30/45/60 minutes or one day) and the days of the week. All this information will be needed to count available seats and avoid booking when you are not available or physically unable to do so.
 
 <img src="https://user-images.githubusercontent.com/97242088/221548589-58dfb309-ae79-42fd-a58e-e27e45d7f1f9.png" alt='Sign in'> <br>
-<img src='https://user-images.githubusercontent.com/97242088/221548641-e442bd45-3fa3-440d-baf8-0e20e1be565a.png'  width='300' height='500' alt='Sign on'>
 
-In my app accounts i use HTML to dynamically connect my views with backend. For me it's more faster way then use simple javascript.
+*In app accounts I use HTMX to dynamically connect my views with backend. This is another way of communication between frontend and backend
+
+<img src='https://user-images.githubusercontent.com/97242088/221548641-e442bd45-3fa3-440d-baf8-0e20e1be565a.png'  width='300' alt='Sign on'>
+
+Without registering, you can view users, view the list of their appointments (if they have selected the scoupe calendar for "all"), but that's all you can do.
+
+<img src='https://user-images.githubusercontent.com/97242088/225920454-3e77d14a-4075-4402-beb5-449596895bda.png'  alt='Register'>
+
+You can go back to your profile settings and change anything at any time.
+
+<h3>Calendar</h3>
+
+After creating a new account, you now see your Calendar, nothing happens in it, but when you have an appointment, that appointment will appear in your calendar.
+
+How your profile will be visible to others will depend on the settings in your profile. Full information may be available to all users, only friends or only you. Also when you select the "Organization" role in the settings, your profile and calendar will have a different view, but we'll talk about that later.
+
+<img src='https://user-images.githubusercontent.com/97242088/225916137-cf20e681-9b4a-427e-aae2-e0af14920097.png'  alt='Calendar'>
+
+Let's check someone's calendar.
+
+When you visit someone else's calendar view, you can ask them for an appointment. However, you should check the time and day and availability, because if you choose the wrong time, you can send him this form, and of course, you can't ask him to meet you in the past.
+
+<img src='https://user-images.githubusercontent.com/97242088/225927091-b88ca018-5576-4bbb-9d65-1a830551b9d3.png' alt='Meeting'>
+
+As you can see, there is a difference between what the calendar looks like for its owner and what it looks like for a guest (if you are the owner you have more information about appointments).
+
+<img src='https://user-images.githubusercontent.com/97242088/225927071-d6238e80-f3ef-45dd-93cb-b650eb7ef4f8.png' alt='Meeting2'>
+
+If everything is correct, this user will see our request in his panel and only if he accepts it, the meeting will be in our calendar and in his. The number of vacancies in both our calendars will be recalculated.
+
+<img src='https://user-images.githubusercontent.com/97242088/225916951-a4baa913-e164-464a-aa9c-f6984b37b2f9.png' alt='meeting ok'>
+
+If he ignores it, the meeting will go down in history, but it won't affect anything.
+
+You can follow users and users can follow you. In the search input, enter a username, last name or nickname and find him.
+
+<img src='https://user-images.githubusercontent.com/97242088/225916409-a00662a7-fef2-406a-9738-eb802c2a954a.png'>
 
 
-<img src='https://user-images.githubusercontent.com/97242088/221548716-bbda36c0-5084-4922-b799-b1ac772ab369.png'  width='400' height='400' alt='Register'>
+<h3>Chat Rooms</h3>
 
-After creating a new account, you now see your Calendar, nothing happens in it, but when you have an appointment, that appointment will appear in your calendar
+The "Chat" application creates a WebSocket connection between users in their room. 
 
-How your profile will be visible to others will depend on the settings in your profile, this view may be available to all users, only friends or only you. Also when you select the "Organization" role in the settings, your profile and calendar will have a different view, but we'll talk about that later.
+*I use Django channels for this.
 
-<img src='https://user-images.githubusercontent.com/97242088/221548766-74fa3015-a16b-43b0-9705-56fd7ad33e5b.png'  width='500' height='300' alt='Calendar'>
+I call it rooms, but in my app it's called "discussions". If the user is online (it means they have an open dialog) this discussion will have a green point.
 
-When you visit someone else's calendar view, you can ask them for an appointment. However, you should check the time and day and availability, because if you choose the wrong time, you can send him this form.
+<img src='https://user-images.githubusercontent.com/97242088/225919595-29de6a54-a321-41c9-b586-368f493cd7ea.png'>
 
-<img src='https://user-images.githubusercontent.com/97242088/221548833-08e2e32d-dac8-4c2f-868d-96263b935c85.png'  width='600' height='400' alt='Meeting2'>
+In the dialog view, all users will have the same view at the same time (you don't need to reload the page to see new messages)
 
-If everything is ok then this user will see our request in his panel and only if he accepts it then the meeting will be in our calendar and user's calendar and all available places will be recalculated.
+<img src='https://user-images.githubusercontent.com/97242088/225919195-7bdd33bc-ae42-41af-97e5-e498d2c40f78.png'>
 
-<img src='https://user-images.githubusercontent.com/97242088/221548841-6e75ad17-2a0d-4c6a-b6aa-232edc46ba5f.png'  width='600' height='420' alt='meeting in'>
-
-If he ignores it, the meeting will go down in history, but it won't affect anything
-
-<img src='https://user-images.githubusercontent.com/97242088/221548854-f247b934-2155-4ba7-a556-1d306446a5bc.png' alt='meeting ok'>
 
 *this page is not finished yet
 
@@ -156,7 +195,7 @@ then
 
 `python manage.py makemigrations`
 
-then again run
+then run
 
 `python manage.py migrate`
 

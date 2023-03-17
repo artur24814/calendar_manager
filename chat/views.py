@@ -10,8 +10,7 @@ def index_view(request):
 
 
 def room_view(request, room_name):
-    changed_room_name = room_name + '-' + request.user.username
-    chat_room, created = Room.objects.get_or_create(name=changed_room_name)
+    chat_room, created = Room.objects.get_or_create(name=room_name)
     room_messages = Message.objects.filter(room=chat_room).order_by('timestamp')
     return render(request, 'chat/room.html', {
         'room': chat_room,
