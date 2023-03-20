@@ -14,9 +14,9 @@
               <h5 class="mb-0">Room: #{{ room.name }}</h5>
             </div>
             <div class="card-body chat-body overflow-auto" id="chatLog" data-user="{{request.user.username}}"style="position: relative; height: 400px">
-                <div class="divider d-flex align-items-center mb-4">
+                <!-- <div class="divider d-flex align-items-center mb-4">
                     <p class="text-center mx-3 mb-0" style="color: #a2aab7;">Today</p>
-                  </div>
+                  </div> -->
                 {% for message in room_messages %}
                     {% if message.user == request.user %}
                     <div class="d-flex flex-row justify-content-start">

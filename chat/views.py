@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 from chat.models import Room, Message, UnreadMessage
-from django.contrib.auth.models import User
 
-
+@login_required
 def index_view(request):
-    return render(request, 'chat/index.html', {
-        'rooms': Room.objects.all(),
-        'unread_msgs': UnreadMessage.objects.filter(user=request.user)
-    })
+    return render(request, 'chat/index.html')
 
+@login_required
+# open existing room
 def open_room_view(request, room_name):
     chat_room, created = Room.objects.get_or_create(name=room_name)
     room_messages = Message.objects.filter(room=chat_room).order_by('timestamp')
@@ -19,7 +19,8 @@ def open_room_view(request, room_name):
         'room_messages': room_messages
     })
 
-
+@login_required
+# create or get room
 def create_room_view(request, username):
     variant_1 = Room.objects.filter(name=f'{request.user.username}_{username}').first()
     variant_2 = Room.objects.filter(name=f'{username}_{request.user.username}').first()

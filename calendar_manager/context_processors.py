@@ -11,7 +11,7 @@ def navbar_messages(request):
     context processor to check unread message and show it to user wherever user is in website,
     """
     try:
-        all_user_chat_room = Room.objects.all()
+        all_user_chat_room = request.user.rooms.all()
         unconfirmed_meeetins = Meetings.objects.filter(replied=request.user.pk, confirmed=False)
         all_meetings = Meetings.objects.filter(replied=request.user) | Meetings.objects.filter(asker=request.user)
         list_meetings = [model_to_dict(meeting) for meeting in all_meetings.filter(date__gte=now).order_by('-time_start').order_by('date')]

@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.views import View
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
+from django.views import View
+
 from .forms import SignUpForm, ProfileForm
 from .validators import validate_password
 
@@ -92,14 +92,11 @@ class LoginView(View):
         }
         return render(request, 'accounts/login.html', context)
 
+# logout view
+def LogoutView(request):
 
-class LogoutView(View):
-    """
-    logout view
-    """
-    def get(self, request):
-        logout(request)
-        return redirect('/login/')
+    logout(request)
+    return redirect('/login/')
 
 """
 
@@ -114,12 +111,12 @@ def valid_password(request):
         return HttpResponse('')
     result = validate_password(password)
     if name.upper() in password.upper() and name != '':
-        return HttpResponse('nie może być zbyt podobne do innych Twoich danych osobowych')
+        return HttpResponse('cannot be too similar to other personal data!')
     return HttpResponse(f'{result}')
 
 def check_existing_name(request):
     name = request.GET.get('username')
     user = User.objects.filter(username=name).first()
     if user:
-        return HttpResponse('Taki login już istnieje')
+        return HttpResponse('This login already exists!')
     return HttpResponse('')

@@ -95,11 +95,13 @@ The "Chat" application creates a WebSocket connection between users in their roo
 
 I call it rooms, but in my app it's called "discussions". If the user is online (it means they have an open dialog) this discussion will have a green point.
 
-<img src='https://user-images.githubusercontent.com/97242088/225919595-29de6a54-a321-41c9-b586-368f493cd7ea.png'>
+<img src='https://user-images.githubusercontent.com/97242088/226368965-983b52ba-ca50-44cd-b8e7-7e85ecb37c1b.png'>
 
 In the dialog view, all users will have the same view at the same time (you don't need to reload the page to see new messages)
 
 <img src='https://user-images.githubusercontent.com/97242088/225919195-7bdd33bc-ae42-41af-97e5-e498d2c40f78.png'>
+
+If you want, you can rename the room and add more users to the discussion.
 
 
 *this page is not finished yet
