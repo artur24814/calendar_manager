@@ -29,5 +29,20 @@ class Message(models.Model):
     content = models.CharField(max_length=512)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if len(self.room.users.all()) == len(self.room.online.all()):
+            unread_msgs = UnreadMessage.objects.filter(room=self.room)
+            for msg in unread_msgs:
+                msg.delete()
+        else:
+            for user in self.room.users.all():
+                if user not in self.room.online.all():
+                    UnreadMessage.objects.create(room=self.room, user=user)
+        super(Message, self).save(*args, **kwargs)
+
     def __str__(self):
         return f'{self.user.username}: {self.content} [{self.timestamp}]'
+    
+class UnreadMessage(models.Model):
+    room = models.ForeignKey(to=Room, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)

@@ -64,7 +64,7 @@
                                   </div>
                                   </div>
                                   <div class="d-flex pt-1">
-                                    <a href="{% url 'chat:chat-room' profile.owner.username %}">
+                                    <a href="{% url 'chat:create-room' profile.owner.username %}">
                                         <button type="button" class="btn btn-outline-primary me-1 flex-grow-1">Chat</button>
                                     </a>
                                     <a href="{% url 'calendar:calendar' profile.owner.pk %}">
