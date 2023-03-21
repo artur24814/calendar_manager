@@ -89,7 +89,7 @@ class CalendarView(View):
         return render(request, 'calendar_manager/calendar.html', context)
 
 
-class TimelineForFollowers(LoginRequiredMixin,View):
+class TimelineView(LoginRequiredMixin,View):
     """
     Timeline for Users
 
@@ -100,7 +100,7 @@ class TimelineForFollowers(LoginRequiredMixin,View):
         create :model:Day for request.user and user.user_pk
                 :model:Meeting 
                 add :model:Meeting to :model:Day
-        Template `timeline_for_followers.html`
+        redirect `calendar:calendar`
     """
     def post(self, request, month, day, user_pk):
         user = get_object_or_404(User, pk=user_pk)
@@ -135,24 +135,30 @@ class AcceptMeeting(LoginRequiredMixin,View):
         pk_meeting
     :return:
         :model:Meeting.acept is True
-        set of :model:Day.count meeting + 1
-        redirect `meetings-list`
+        set :model:Day.count meeting + 1
+        redirect `calendar:calendar`
     """
     def get(self, request, pk_meeting):
         meeting = get_object_or_404(Meetings, pk=pk_meeting)
         if meeting.replied == request.user and meeting.confirmed is False:
             days = meeting.days.all()
+            #check days timeline
             for day in days:
                 if day.available_places == 0:
                     messages.success("You or your oponent haven't available plases on this day, please change a day meeting")
                     return redirect(reverse('calendar:calendar', kwargs={'user_pk': request.user.id}))
+                
+            #add meeting, subtract available places
+            for day in days:
                 day.count_meetings += 1
                 day.available_places -= 1
                 day.save()
             meeting.confirmed = True
             meeting.save()
         return redirect(reverse('calendar:calendar', kwargs={'user_pk': request.user.id}))
-class ListFriendsView(ListView):
+    
+
+class ListFriendsView(LoginRequiredMixin,ListView):
     """
     List Users Followers view
 
@@ -171,10 +177,10 @@ class ListFriendsView(ListView):
     
     #get filtered queryset
     def get_queryset(self):
-        queryset = self.request.user.profile.follows.all()
+        queryset = self.request.user.profile.follows.all().exclude(owner=self.request.user).order_by('owner__first_name')
         if self.request.GET.get("search"):
             search = self.request.GET.get("search")
-            queryset = self.request.user.profile.follows.filter(owner__username__contains=search) | self.request.user.profile.follows.filter(owner__first_name__contains=search) | self.request.user.profile.follows.filter(owner__last_name__contains=search)
+            queryset = self.request.user.profile.follows.filter(owner__username__contains=search).exclude(owner=self.request.user).order_by('owner__first_name') | self.request.user.profile.follows.filter(owner__first_name__contains=search).exclude(owner=self.request.user).order_by('owner__first_name') | self.request.user.profile.follows.filter(owner__last_name__contains=search).exclude(owner=self.request.user).order_by('owner__first_name')
         return queryset
 
 

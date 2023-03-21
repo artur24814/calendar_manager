@@ -4,14 +4,18 @@ from django.contrib.auth.models import User
 from calendar_manager.models import (
     Day, Meetings
 )
-import datetime
-from django.utils.timezone import get_current_timezone
-from datetime import timedelta
+from django.conf import settings
+
+
+# Issue with file storage
+@pytest.fixture
+def in_memory():
+    settings.DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
 
 @pytest.fixture
 def client():
     return Client()
-
 
 @pytest.fixture
 def user():
@@ -26,6 +30,12 @@ def user2():
     return user
 
 @pytest.fixture
+def user3():
+    user = User.objects.create_user(username='User3', first_name='Jon', last_name='Malkowicz',
+                                    email='User3@example.com', password='Password14767')
+    return user
+
+@pytest.fixture
 def login_user(user, client):
     login_user = client.post('/login/', data={'username': 'User1', 'password': 'Password1476'})
     return login_user
@@ -34,3 +44,11 @@ def login_user(user, client):
 def login_user2(user2, client):
     login_user = client.post('/login/', data={'username': 'User2', 'password': 'Password14767'})
     return login_user
+
+@pytest.fixture
+def user_with_folows(user, user2, user3, client):
+    user.profile.follows.add(user2.profile)
+    user.profile.follows.add(user3.profile)
+    return user
+
+

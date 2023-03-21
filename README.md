@@ -208,5 +208,14 @@ to start the development server
 
 and open localhost:8000 on your browser to view the app.
 
+run tests
+
+```
+   > cd tests
+   > pytest
+```
+
+<img src='https://user-images.githubusercontent.com/97242088/226597366-04d7370b-1ec0-4180-b2a7-3bb0716cc7aa.png'>
+
 Have fun
 <p style="font-size:100px">&#129409;</p>
