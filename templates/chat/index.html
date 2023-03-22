@@ -19,10 +19,22 @@
                       <div class="d-flex flex-row">
                         <div>
                           {% for user in room.users.all %}
-                            {% if user != request.user %}
-                            <img
-                              src="{{ user.profile.image.url }}"
-                              alt="avatar" class="d-flex align-self-center me-3 position-relative" width="60">
+                            {% if room.users.all.count != 2 %}                              
+                            <div class="container me-3 position-relative" width="60">
+                                <div class="row row-cols-2">
+                                  {% if user != request.user %}
+                                  <div class="col">
+                                    <img src="{{ user.profile.image.url }}" alt="avatar" width="30">
+                                  </div>
+                                  {% endif %}
+                                </div>
+                            </div>
+                            {% else %}
+                              {% if user != request.user %}
+                              <img
+                                src="{{ user.profile.image.url }}"
+                                alt="avatar" class="d-flex align-self-center me-3 position-relative" width="60">
+                              {% endif %}
                             {% endif %}
                           {% endfor %}
                           {% for user in room.users.all %}

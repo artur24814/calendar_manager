@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User, Permission
+from django.contrib.contenttypes.models import ContentType
 import datetime
 from django.utils.timezone import get_current_timezone
 from django.core.validators import RegexValidator
@@ -57,6 +58,15 @@ class Profile(models.Model):
 
     follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False, blank=True)
 
+    #for Organizations
+    employee = models.ManyToManyField('Employee', related_name='company', blank=True)
+    posts = models.ManyToManyField('Posts', related_name='company_post', blank=True)
+
+    class Meta:
+        permissions = (
+            ("add_employee", "can add employee"),
+            )
+
 
     def save(self, *args, **kwargs):
         try:
@@ -68,13 +78,36 @@ class Profile(models.Model):
             if self.meeting_type == 0:
                 self.day_available_places = 1 #for full day meeting
             else:
-                print(self.work_regulations)
+                #divide working day by type of meeting
                 self.day_available_places = int(result.seconds/(self.meeting_type*60))
+
+            if self.role == '0':
+                employer_group, created = Group.objects.get_or_create(name="Employer")
+                permission = Permission.objects.get(name='add_employee')
+                employer_group.permissions.add(permission)
+                self.owner.groups.add(employer_group)
             super().save(*args, **kwargs)
         except Exception:
             super().save(*args, **kwargs)
     def __str__(self):
         return self.owner.first_name + " " + self.owner.last_name
+    
+class Employee(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    position = models.CharField(max_length=500, null=True)
+    responsibilities = models.TextField(null=True)
+
+    def __str__(self):
+        return self.user.first_name + " " + self.user.last_name
+
+class Posts(models.Model):
+    title = models.CharField(max_length=500)
+    descriptions = models.TextField()
+    date = models.DateTimeField(auto_now=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title 
 
 #Create Profile when new User Signs Up
 def create_profile(sender, instance, created, **kwargs):

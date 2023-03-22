@@ -37,6 +37,15 @@
                           <span class="position-absolute badge rounded-pill bg-danger ">{{ request.user|unread_all }}</span>
                       {% endif %}</a>
                     </li>
+                    {% if perms.accounts.add_employee %}
+                      <a class="dropdown-item" href="{% url 'chat:create-company-group-room' %}"><i class="bi bi-wechat"></i>
+                        Group chat
+                        {% if request.user|unread_all == 0 %}
+                            <span class="position-absolute badge rounded-pill bg-danger"></span>
+                        {% else %}
+                            <span class="position-absolute badge rounded-pill bg-danger ">{{ request.user|unread_all }}</span>
+                        {% endif %}</a>
+                    {% endif %}
                     <li>
                       <button class="dropdown-item" id="meeting-quantity" data-meetings="{{all_meetings}}"  data-url="{% url 'calendar:meeting-accept-no-args' %}" data-user="{{request.user.id}}"><i class="bi bi-bell-fill"></i>
                       Your meetings

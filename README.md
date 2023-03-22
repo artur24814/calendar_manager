@@ -103,8 +103,42 @@ In the dialog view, all users will have the same view at the same time (you don'
 
 If you want, you can rename the room and add more users to the discussion.
 
+<h3>For businesses</h3>
+<hr>
 
-*this page is not finished yet
+This site, as I mentioned earlier, looks different for companies.
+
+There is no calendar on the profile page where you can make appointments, instead, on the company profile page, you can see the employees of the company, as well as articles or events of that company.
+
+<img src='https://user-images.githubusercontent.com/97242088/226953789-8f0fad8d-6b25-4de7-9046-f6022c4d207a.png'>
+
+By entering as the owner of this page, you will be able to manage it: 
+* add employees, edit their positions and responsibilities;
+* add posts.
+
+<img src='https://user-images.githubusercontent.com/97242088/226953334-c77b618f-1d86-4fbb-9b07-97a792d30e8c.png'>
+
+<center>Add post/Edit employee </center>
+<center><img width='200' src='https://user-images.githubusercontent.com/97242088/226959138-6bf636aa-fc19-4b15-9729-57b6b744d7a3.png'>
+<img width='200' src='https://user-images.githubusercontent.com/97242088/226959242-afb09e77-54d4-4df2-9664-d1201beadf88.png'></center>
+
+The post will have its shortcut on the profile page and it will also have a details view.
+
+<center><img width='200' src='https://user-images.githubusercontent.com/97242088/226956423-df01937a-22f6-4ccc-a809-36ba68ea11fb.png'>
+<img width='200' src='https://user-images.githubusercontent.com/97242088/226956527-448c17ec-fe4a-44ba-8a47-3576c07240e6.png'></center>
+
+
+An additional and very useful option for companies is the creation of chat groups.
+
+You will see such a button on your user panel.
+
+<img src='https://user-images.githubusercontent.com/97242088/226954130-2a60e844-c891-4c3c-b843-1dec3a787b17.png'>
+
+Each time you click on it, you will renew the chat, and if you add new employees, they will automatically appear there.
+
+<img src='https://user-images.githubusercontent.com/97242088/226954343-929766d8-ef41-4506-b60e-1becb2c7348b.png'>
+
+
 
 <center><h2 id="clone_project">Clone and Run a Django Project</h2></center>
 

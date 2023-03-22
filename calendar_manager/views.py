@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.forms.models import model_to_dict
 from django.views import View
-from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -17,7 +18,7 @@ from datetime import timedelta
 
 from .forms import AskMeetingsForm
 from .models import Day, Meetings
-from accounts.models import Profile
+from accounts.models import Profile, Employee, Posts
 from .utils import now, add_day_model
 
 
@@ -238,3 +239,56 @@ def folowUnfolowView(request, profile_pk):
             request.user.profile.follows.add(profile)
 
     return redirect(reverse('calendar:calendar', kwargs={'user_pk': profile.owner.pk}))
+
+@login_required
+@permission_required("accounts.add_employee")
+def add_employer_view(request, user_pk):
+    user = get_object_or_404(User, pk=user_pk)
+    employee_obj, create = Employee.objects.get_or_create(user=user)
+    if employee_obj in request.user.profile.employee.all():
+        request.user.profile.employee.remove(employee_obj)
+    else:
+        request.user.profile.employee.add(employee_obj)
+    return redirect(reverse('calendar:calendar', kwargs={'user_pk': user_pk}))
+
+@login_required
+@permission_required("accounts.add_employee")
+def change_emploee_view(request, employee_pk):
+    if request.method == 'POST':
+        emploee = get_object_or_404(Employee, pk=employee_pk)
+        position = request.POST['position']
+        responsibilities = request.POST['responsibilities']
+        if position is not None and position != 'None':
+            emploee.position = str(position)
+            emploee.save()
+        if responsibilities is not None and responsibilities != 'None':
+            emploee.responsibilities = str(responsibilities)
+            emploee.save()
+    return redirect(reverse('calendar:calendar', kwargs={'user_pk': request.user.id}))
+
+@login_required
+@permission_required("accounts.add_employee")
+def create_post_view(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        descriptions = request.POST['descriptions']
+        if title is not None and descriptions is not None:
+            post = Posts.objects.create(title=title, descriptions=descriptions, owner=request.user)
+            post.save()
+            request.user.profile.posts.add(post)
+    return redirect(reverse('calendar:calendar', kwargs={'user_pk': request.user.id}))
+
+@login_required
+@permission_required("accounts.add_employee")
+def delete_post_view(request, id_post):
+    post = get_object_or_404(Posts, id=id_post)
+    if request.user == post.owner:
+        post.delete()
+        return JsonResponse('deleted', safe=False)
+    return JsonResponse('Forbidden Error', safe=False)
+
+class PostDetailView(DetailView):
+    model = Posts
+    template_name = 'calendar_manager/post_detail.html'
+
+

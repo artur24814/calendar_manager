@@ -1,7 +1,7 @@
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 
 from chat.models import Room, Message, UnreadMessage
 
@@ -38,4 +38,18 @@ def create_room_view(request, username):
         'room': chat_room,
         'room_messages': room_messages
     })
+
+@login_required
+@permission_required("accounts.add_employee")
+#create group chat
+def create_group_company_chat(request):
+    chat_room, created = Room.objects.get_or_create(name=f'{request.user.username}_incorporated')
+    #add employees to the chat
+    for user in request.user.profile.employee.all():
+        #add user if chat just created
+        if created:
+            chat_room.users.add(request.user)
+        if user not in chat_room.users.all():
+            chat_room.users.add(user.user)
+    return redirect(reverse('chat:chat-room', kwargs={'room_name': chat_room.name}))   
 
