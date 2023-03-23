@@ -42,15 +42,17 @@ A high-level Python web framework that encourages rapid development and clean, p
 * calendar
 * Chat app
 
-<h3>Accounts</h3>
+### Accounts
 
 You must be register to have full access to all features. When creating a new profile, you need to select when you will be available for meetings from one hour to an hour, as well as the meeting format (it can be 15/30/45/60 minutes or one day) and the days of the week. All this information will be needed to count available seats and avoid booking when you are not available or physically unable to do so.
 
-<img src="https://user-images.githubusercontent.com/97242088/221548589-58dfb309-ae79-42fd-a58e-e27e45d7f1f9.png" alt='Sign in'> <br>
+| <img src="https://user-images.githubusercontent.com/97242088/221548589-58dfb309-ae79-42fd-a58e-e27e45d7f1f9.png" alt='Sign in'> | <img src='https://user-images.githubusercontent.com/97242088/221548641-e442bd45-3fa3-440d-baf8-0e20e1be565a.png'  width='300' alt='Sign on'> |
+| ---- | ----- |
 
-*In app accounts I use HTMX to dynamically connect my views with backend. This is another way of communication between frontend and backend
-
-<img src='https://user-images.githubusercontent.com/97242088/221548641-e442bd45-3fa3-440d-baf8-0e20e1be565a.png'  width='300' alt='Sign on'>
+```
+In app accounts I use HTMX to dynamically connect my views with backend. 
+This is another way of communication between frontend and backend.
+```
 
 Without registering, you can view users, view the list of their appointments (if they have selected the scoupe calendar for "all"), but that's all you can do.
 
@@ -58,7 +60,7 @@ Without registering, you can view users, view the list of their appointments (if
 
 You can go back to your profile settings and change anything at any time.
 
-<h3>Calendar</h3>
+### Calendar
 
 After creating a new account, you now see your Calendar, nothing happens in it, but when you have an appointment, that appointment will appear in your calendar.
 
@@ -72,7 +74,7 @@ When you visit someone else's calendar view, you can ask them for an appointment
 
 <img src='https://user-images.githubusercontent.com/97242088/225927091-b88ca018-5576-4bbb-9d65-1a830551b9d3.png' alt='Meeting'>
 
-As you can see, there is a difference between what the calendar looks like for its owner and what it looks like for a guest (if you are the owner you have more information about appointments).
+As you can see, there is a difference between what the calendar looks like for its owner and what it looks like for a guest (if you are the owner you have more information about appointments) ⬇️.
 
 <img src='https://user-images.githubusercontent.com/97242088/225927071-d6238e80-f3ef-45dd-93cb-b650eb7ef4f8.png' alt='Meeting2'>
 
@@ -108,29 +110,37 @@ If you want, you can rename the room and add more users to the discussion.
 
 This site, as I mentioned earlier, looks different for companies.
 
-There is no calendar on the profile page where you can make appointments, instead, on the company profile page, you can see the employees of the company, as well as articles or events of that company.
+| There is no calendar on the profile page where you can make appointments, instead, on the company profile page, you can see the employees of the company, as well as articles or events of that company. ➡️ | <img width='2000' src='https://user-images.githubusercontent.com/97242088/226953789-8f0fad8d-6b25-4de7-9046-f6022c4d207a.png'> |
+| :--- | :---: |
+<table>
+   <tr>
+      <th>
+         By entering as the owner of this page, you will be able to manage it ➡️:
+         <ul>
+           <li>add employees, edit their positions and responsibilities;</li>
+           <li>add posts.</li>
+         </ul>
+      </th>
+      <th>
+         <img src='https://user-images.githubusercontent.com/97242088/226953334-c77b618f-1d86-4fbb-9b07-97a792d30e8c.png'>
+      </th>
+   </tr>
+</table>
 
-<img src='https://user-images.githubusercontent.com/97242088/226953789-8f0fad8d-6b25-4de7-9046-f6022c4d207a.png'>
+ Add post ⬇️ | Edit employee ⬇️
+ -- | -- 
+ <img  src='https://user-images.githubusercontent.com/97242088/226959138-6bf636aa-fc19-4b15-9729-57b6b744d7a3.png'> | <img  src='https://user-images.githubusercontent.com/97242088/226959242-afb09e77-54d4-4df2-9664-d1201beadf88.png'> 
 
-By entering as the owner of this page, you will be able to manage it: 
-* add employees, edit their positions and responsibilities;
-* add posts.
-
-<img src='https://user-images.githubusercontent.com/97242088/226953334-c77b618f-1d86-4fbb-9b07-97a792d30e8c.png'>
-
-<center>Add post/Edit employee </center>
-<center><img width='200' src='https://user-images.githubusercontent.com/97242088/226959138-6bf636aa-fc19-4b15-9729-57b6b744d7a3.png'>
-<img width='200' src='https://user-images.githubusercontent.com/97242088/226959242-afb09e77-54d4-4df2-9664-d1201beadf88.png'></center>
 
 The post will have its shortcut on the profile page and it will also have a details view.
 
-<center><img width='200' src='https://user-images.githubusercontent.com/97242088/226956423-df01937a-22f6-4ccc-a809-36ba68ea11fb.png'>
-<img width='200' src='https://user-images.githubusercontent.com/97242088/226956527-448c17ec-fe4a-44ba-8a47-3576c07240e6.png'></center>
+| <img src='https://user-images.githubusercontent.com/97242088/226956423-df01937a-22f6-4ccc-a809-36ba68ea11fb.png'> | <img src='https://user-images.githubusercontent.com/97242088/226956527-448c17ec-fe4a-44ba-8a47-3576c07240e6.png'> |
+| ------- | ------ |
 
 
 An additional and very useful option for companies is the creation of chat groups.
 
-You will see such a button on your user panel.
+You will see new button on your user panel.
 
 <img src='https://user-images.githubusercontent.com/97242088/226954130-2a60e844-c891-4c3c-b843-1dec3a787b17.png'>
 
