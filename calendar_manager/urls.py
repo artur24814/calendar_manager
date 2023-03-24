@@ -23,5 +23,4 @@ urlpatterns = [
     #Duplicate url without argunments (for adding variables to JS)
     path('meetings/accept/', CalendarView.as_view(), name='meeting-accept-no-args'),
     path('calendar/', CalendarView.as_view(), name='calendar-no-args'),
-
 ]

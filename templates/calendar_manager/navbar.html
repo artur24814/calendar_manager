@@ -2,7 +2,7 @@
 {% load msgs_unread %}
 <nav id="nav" class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'img/icon.png' %}" class="d-inline-block align-text-top"/> &nbsp;&nbsp;CALENDAR MANAGER</a>
+        <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'img/icon.png' %}" class="d-inline-block align-text-top"/> &nbsp;&nbsp; <font face = "courier" size = "4">CALENDAR</font><font face = "Comic sans MS" size = "1" color = "red">MANAGER</font></a>
             <div class="links">
                 <a class="nav-link active" aria-current="page" href=""></a>
                 <form class="d-flex" method="get", action="{% url 'calendar:users'  %}">

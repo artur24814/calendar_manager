@@ -290,5 +290,6 @@ def delete_post_view(request, id_post):
 class PostDetailView(DetailView):
     model = Posts
     template_name = 'calendar_manager/post_detail.html'
+    
 
 
