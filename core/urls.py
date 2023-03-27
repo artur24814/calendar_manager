@@ -16,3 +16,7 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
+
+handler403 = "calendar_manager.views.forbidden_view"
+handler404 = "calendar_manager.views.page_not_found_view"
+handler500 = "calendar_manager.views.server_error_view"

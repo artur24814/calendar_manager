@@ -292,4 +292,14 @@ class PostDetailView(DetailView):
     template_name = 'calendar_manager/post_detail.html'
     
 
+#page 403
+def forbidden_view(request, exception):
+    return render(request, 'errors/403.html', status=403)
 
+#page 404
+def page_not_found_view(request, exception):
+    return render(request, 'errors/404.html', status=404)
+
+#page 500
+def server_error_view(request, *args, **argv):
+    return render(request, 'errors/500.html', status=500)
