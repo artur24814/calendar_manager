@@ -50,8 +50,6 @@ INSTALLED_APPS = [
     'widget_tweaks',
     #For AWS
     'storages',
-    #sslserver for debugging
-    # 'sslserver',
 
     #social-auth-app-django
     # 'social_django',
@@ -86,7 +84,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #custom social auth setting
-    'social_django.middleware.SocialAuthExceptionMiddleware',
+    # 'social_django.middleware.SocialAuthExceptionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
@@ -105,7 +103,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'calendar_manager.context_processors.navbar_messages',
                 #custom social auth setting
-                'social_django.context_processors.backends',
+                # 'social_django.context_processors.backends',
             ],
         },
     },
