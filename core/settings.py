@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     #For AWS
     'storages',
     #sslserver for debugging
-    'sslserver',
+    # 'sslserver',
 
     #social-auth-app-django
     # 'social_django',
