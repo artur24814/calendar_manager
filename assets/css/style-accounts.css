@@ -1,0 +1,38 @@
+#layoutAuthentication {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+#layoutAuthentication #layoutAuthentication_content {
+  min-width: 0;
+  flex-grow: 1;
+}
+
+
+.labels {
+    font-size: 11px
+}
+.MyAlert {
+  padding: 20px;
+  background-color: #507e94; /* Red */
+  color: white;
+  margin-bottom: 15px;
+  box-shadow:0 0 15px 5px #ccc;
+}
+
+/* The close button */
+.closebtn {
+margin-left: 15px;
+color: white;
+font-weight: bold;
+float: right;
+font-size: 22px;
+line-height: 20px;
+cursor: pointer;
+transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+color: black;
+}

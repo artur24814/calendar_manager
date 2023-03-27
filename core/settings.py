@@ -68,10 +68,12 @@ else:
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [(os.environ.get('REDIS_HOST'))],
         },
     },
 }
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -199,6 +201,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
+STATIC_ROOT =  os.path.join(BASE_DIR, 'assets')
 
 MEDIA_ROOT = 'media/'
 MEDIA_URL = 'media/'
