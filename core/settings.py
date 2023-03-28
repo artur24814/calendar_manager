@@ -55,8 +55,8 @@ INSTALLED_APPS = [
     # 'social_django',
 ]
 
-ASGI_APPLICATION = 'core.asgi.application'
 
+## Channels Specific
 if DEBUG is True:
     CHANNEL_LAYERS = {
         "default": {
@@ -70,9 +70,11 @@ else:
         'CONFIG': {
             "hosts": [(os.environ.get('REDIS_HOST'))],
         },
+        "symmetric_encryption_keys": [SECRET_KEY],
     },
 }
 
+ASGI_APPLICATION = 'core.asgi.application'
 
 
 MIDDLEWARE = [
