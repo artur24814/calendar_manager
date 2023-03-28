@@ -75,7 +75,7 @@
                                     <a href="{% url 'calendar:calendar' profile.owner.pk %}">
                                         <button type="button" class="btn btn-primary me-1 flex-grow-1">See Profile</button>
                                     </a>
-                                    {% if perms.accounts.add_employee %}
+                                    {% if request.user.profile.role == '0' %}
                                     <a href="{% url 'calendar:add-employer' profile.owner.pk %}">
                                         <button type="button" class="btn btn-dark flex-grow-1">Add employee</button>
                                     </a>

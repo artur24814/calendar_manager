@@ -241,20 +241,19 @@ def folowUnfolowView(request, profile_pk):
     return redirect(reverse('calendar:calendar', kwargs={'user_pk': profile.owner.pk}))
 
 @login_required
-@permission_required("accounts.add_employee")
 def add_employer_view(request, user_pk):
-    user = get_object_or_404(User, pk=user_pk)
-    employee_obj, create = Employee.objects.get_or_create(user=user)
-    if employee_obj in request.user.profile.employee.all():
-        request.user.profile.employee.remove(employee_obj)
-    else:
-        request.user.profile.employee.add(employee_obj)
+    if request.user.profile.role == '0':
+        user = get_object_or_404(User, pk=user_pk)
+        employee_obj, create = Employee.objects.get_or_create(user=user)
+        if employee_obj in request.user.profile.employee.all():
+            request.user.profile.employee.remove(employee_obj)
+        else:
+            request.user.profile.employee.add(employee_obj)
     return redirect(reverse('calendar:calendar', kwargs={'user_pk': user_pk}))
 
 @login_required
-@permission_required("accounts.add_employee")
 def change_emploee_view(request, employee_pk):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.profile.role == '0':
         emploee = get_object_or_404(Employee, pk=employee_pk)
         position = request.POST['position']
         responsibilities = request.POST['responsibilities']
@@ -267,9 +266,8 @@ def change_emploee_view(request, employee_pk):
     return redirect(reverse('calendar:calendar', kwargs={'user_pk': request.user.id}))
 
 @login_required
-@permission_required("accounts.add_employee")
 def create_post_view(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.profile.role == '0':
         title = request.POST['title']
         descriptions = request.POST['descriptions']
         if title is not None and descriptions is not None:
@@ -279,10 +277,9 @@ def create_post_view(request):
     return redirect(reverse('calendar:calendar', kwargs={'user_pk': request.user.id}))
 
 @login_required
-@permission_required("accounts.add_employee")
 def delete_post_view(request, id_post):
     post = get_object_or_404(Posts, id=id_post)
-    if request.user == post.owner:
+    if request.user == post.owner and request.user.profile.role == '0':
         post.delete()
         return JsonResponse('deleted', safe=False)
     return JsonResponse('Forbidden Error', safe=False)

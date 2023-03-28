@@ -37,7 +37,7 @@
                           <span class="position-absolute badge rounded-pill bg-danger ">{{ request.user|unread_all }}</span>
                       {% endif %}</a>
                     </li>
-                    {% if perms.accounts.add_employee %}
+                    {% if request.user.profile.role == '0' %}
                       <a class="dropdown-item" href="{% url 'chat:create-company-group-room' %}"><i class="bi bi-wechat"></i>
                         Group chat
                         {% if request.user|unread_all == 0 %}

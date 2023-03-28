@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Profile, Posts, Employee
+from .models import User, Profile, Posts, Employee, Permission
 
 #Mix Profile, Posts, Employes into User info
 
@@ -15,7 +15,6 @@ class ProfileEmployee(admin.TabularInline):
 #Extend User model
 class UserAdmin(admin.ModelAdmin):
     model=User
-    fields = ['username', 'first_name', 'last_name']
     inlines = [ProfileInLine, ProfilePosts, ProfileEmployee]
 
 

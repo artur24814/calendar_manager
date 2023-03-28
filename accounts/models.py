@@ -87,7 +87,8 @@ class Profile(models.Model):
                 employer_group.permissions.add(permission)
                 self.owner.groups.add(employer_group)
             super().save(*args, **kwargs)
-        except Exception:
+        except Exception as e:
+            print(e)
             super().save(*args, **kwargs)
     def __str__(self):
         return self.owner.first_name + " " + self.owner.last_name
