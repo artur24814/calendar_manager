@@ -41,15 +41,18 @@ chatMessageInput.onkeyup = function(e) {
 };
 
 // clear the 'chatMessageInput' and forward the message
-chatMessageSend.onclick = function() {
-    if (chatMessageInput.value.length === 0) return;
-    //forward the message to the WebSocket
-    chatSocket.send(JSON.stringify({
-        "message": chatMessageInput.value,
-    }));
+chatMessageSend.onclick = async function() {
+    if (chatSocket === true){
+        if (chatMessageInput.value.length === 0) return;
+        //forward the message to the WebSocket
+        await chatSocket.send(JSON.stringify({
+            "message": chatMessageInput.value,
+        }));
+    }
 };
 
 let chatSocket = null;
+let conSocket = null
 
 function connect() {
 
@@ -65,10 +68,12 @@ function connect() {
 
     chatSocket.onopen = function(e) {
         console.log("Successfully connected to the WebSocket.");
+        chatSocket = true
     }
 
     chatSocket.onclose = function(e) {
         console.log("WebSocket connection closed unexpectedly. Trying to reconnect in 2s...");
+        chatSocket = null
         setTimeout(function() {
             console.log("Reconnecting...");
             connect();
