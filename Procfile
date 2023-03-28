@@ -1,1 +1,2 @@
-web: daphne core.asgi:application --bind 0.0.0.0
+web: gunicorn core.wsgi
+daphne: daphne core.asgi:application
