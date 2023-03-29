@@ -1,2 +1,2 @@
 web: gunicorn core.wsgi
-daphne: daphne core.asgi:application
+websocket: daphne -b 0.0.0.0 -p 5000 core.asgi:application
