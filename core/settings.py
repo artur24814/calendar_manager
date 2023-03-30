@@ -29,7 +29,7 @@ print('Debug is: ' + str(DEBUG))
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://web-production-d9e3.up.railway.app', 'plazma-center.com']
+CSRF_TRUSTED_ORIGINS = ['https://web-production-d9e3.up.railway.app', 'https://plazma-center.com']
 
 
 # Application definition
